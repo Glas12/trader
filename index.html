@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Test</title>
+<style>
+body { background: #111; color: #fff; font-family: monospace; padding: 20px; font-size: 14px; }
+.ok { color: #0ecb81; }
+.fail { color: #f6465d; }
+button { background: #f0b90b; color: #000; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin: 10px 5px; display: block; }
+</style>
+</head>
+<body>
+<h2>JS Debug Test</h2>
+<div id="log"></div>
+<button onclick="document.getElementById('log').innerHTML += '<div class=ok>BUTTON ONCLICK WORKS</div>'">Tap Me - onclick test</button>
+<div>Counter: <span id="counter" style="color:#f0b90b;">0</span> (should count up every second)</div>
+<script>
+function log(msg, ok) {
+  var d = document.getElementById('log');
+  if (d) d.innerHTML += '<div class="' + (ok ? 'ok' : 'fail') + '">' + msg + '</div>';
+}
+log('1. Script tag executed', true);
+document.addEventListener('DOMContentLoaded', function() {
+  log('2. DOMContentLoaded fired', true);
+});
+var count = 0;
+setInterval(function() {
+  count++;
+  var el = document.getElementById('counter');
+  if (el) el.textContent = count;
+}, 1000);
+log('3. setInterval started', true);
+window.onerror = function(msg, src, line) {
+  log('JS ERROR: ' + msg + ' (line ' + line + ')', false);
+  return true;
+};
+</script>
+<div style="margin-top:20px;font-size:11px;color:#555;" id="info"></div>
+<script>
+document.getElementById('info').textContent = 'URL: ' + location.href + ' | ' + navigator.userAgent;
+</script>
+</body>
+</html>
