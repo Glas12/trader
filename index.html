@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TradePro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg0:#0b0e11;--bg1:#141820;--bg2:#1e2430;--bdr:#2a3040;--tx:#e8ecf0;--tx2:#8a9ab0;--mu:#5a6a80;--yl:#f0b90b;--gn:#0ecb81;--rd:#f6465d;}
+body{background:var(--bg0);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
+button{cursor:pointer;font-family:inherit;}
+.btn{display:inline-block;border:none;border-radius:8px;font-weight:700;font-size:0.9rem;padding:10px 20px;cursor:pointer;}
+.bYl{background:var(--yl);color:#000;}
+.bOut{background:transparent;color:var(--tx);border:1px solid #3a4560;}
+.bGh{background:var(--bg2);color:var(--tx2);border:1px solid var(--bdr);}
+.bRd{background:var(--rd);color:#fff;}
+.bGn{background:var(--gn);color:#000;}
+.bSm{padding:6px 12px;font-size:0.78rem;}
+.inp{width:100%;background:var(--bg2);border:1px solid #3a4560;border-radius:8px;color:var(--tx);padding:11px 14px;font-size:0.9rem;display:block;}
+.inp:focus{outline:none;border-color:var(--yl);}
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:0.8rem;color:var(--tx2);margin-bottom:5px;font-weight:600;}
+.ferr{font-size:0.8rem;color:var(--rd);margin-top:4px;min-height:16px;}
+.gn{color:var(--gn);} .rd{color:var(--rd);} .yl{color:var(--yl);}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:100;padding:16px;align-items:center;justify-content:center;}
+.ob{background:var(–bg1);border:1px solid #3a4560;border-radius:14px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;}
+.oh{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(–bdr);}
+.oh h3{font-size:1rem;font-weight:700;}
+.oc{background:none;border:none;color:var(–mu);font-size:1.3rem;cursor:pointer;line-height:1;padding:2px 6px;}
+.obb{padding:18px;}
+
+/* TOAST */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(–bg2);border:1px solid var(–bdr);color:var(–tx);padding:10px 20px;border-radius:24px;font-size:0.82rem;z-index:999;display:none;white-space:nowrap;pointer-events:none;}
+
+/* LANDING */
+#pgLand{display:block;}
+.lnav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(–bdr);background:var(–bg1);}
+.logo{font-size:1.1rem;font-weight:800;color:var(–yl);}
+.lnavr{display:flex;gap:8px;}
+.ticker-wrap{background:var(–bg1);border-bottom:1px solid var(–bdr);overflow:hidden;height:36px;display:flex;align-items:center;}
+.ticker-inner{display:flex;gap:32px;white-space:nowrap;padding:0 16px;animation:scrollTicker 30s linear infinite;}
+@keyframes scrollTicker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.ti{display:inline-flex;align-items:center;gap:8px;font-size:0.78rem;}
+.hero{text-align:center;padding:52px 20px 32px;}
+.hero h1{font-size:2rem;font-weight:800;line-height:1.2;margin-bottom:14px;}
+.hero h1 span{color:var(–yl);}
+.hero p{color:var(–tx2);font-size:0.95rem;margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto;}
+.hbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.hbtns .btn{padding:13px 26px;}
+.statsrow{display:flex;justify-content:center;gap:28px;padding:18px 20px;flex-wrap:wrap;border-top:1px solid var(–bdr);border-bottom:1px solid var(–bdr);}
+.si{text-align:center;}
+.sv{font-size:1.2rem;font-weight:800;color:var(–yl);}
+.sl{font-size:0.72rem;color:var(–mu);margin-top:2px;}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;padding:28px 20px;}
+.fc{background:var(–bg1);border:1px solid var(–bdr);border-radius:10px;padding:16px;}
+.fi{font-size:1.4rem;margin-bottom:8px;}
+.ft{font-weight:700;margin-bottom:5px;font-size:0.9rem;}
+.fd{font-size:0.78rem;color:var(–tx2);line-height:1.5;}
+.msec{padding:20px;}
+.msec h2{font-size:1.1rem;font-weight:700;margin-bottom:14px;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:0.7rem;color:var(–mu);text-align:left;padding:7px 8px;border-bottom:1px solid var(–bdr);}
+td{padding:9px 8px;border-bottom:1px solid var(–bdr);font-size:0.82rem;}
+.cc{display:flex;align-items:center;gap:8px;}
+.cb{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0;}
+.lft{text-align:center;padding:20px;border-top:1px solid var(–bdr);color:var(–mu);font-size:0.75rem;}
+
+/* APP */
+#pgApp{display:none;flex-direction:column;height:100vh;}
+.anav{background:var(–bg1);border-bottom:1px solid var(–bdr);display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:52px;flex-shrink:0;}
+.alogo{font-size:0.95rem;font-weight:800;color:var(–yl);}
+.anavr{display:flex;align-items:center;gap:10px;}
+.abal{font-size:0.8rem;color:var(–tx2);}
+.abal b{color:var(–yl);}
+.nbtn{background:none;border:none;cursor:pointer;color:var(–tx2);font-size:1rem;position:relative;padding:4px;}
+.nbdg{position:absolute;top:-1px;right:-1px;background:var(–rd);color:#fff;font-size:0.55rem;font-weight:700;border-radius:50%;width:13px;height:13px;display:flex;align-items:center;justify-content:center;display:none;}
+.av{width:28px;height:28px;border-radius:50%;background:var(–yl);color:#000;font-weight:800;font-size:0.8rem;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;}
+.abody{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:190px;background:var(–bg1);border-right:1px solid var(–bdr);padding:10px 0;flex-shrink:0;overflow-y:auto;}
+.sbl{display:flex;align-items:center;gap:9px;padding:10px 14px;color:var(–tx2);font-size:0.85rem;cursor:pointer;border-left:3px solid transparent;background:none;border-top:none;border-right:none;border-bottom:none;width:100%;text-align:left;}
+.sbl:hover{background:var(–bg2);}
+.sbl.act{color:var(–yl);border-left-color:var(–yl);background:var(–bg2);}
+.main{flex:1;overflow-y:auto;padding:18px;}
+.mobnav{display:none;background:var(–bg1);border-top:1px solid var(–bdr);flex-shrink:0;}
+.mobnavi{display:flex;}
+.mbt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 4px;color:var(–mu);font-size:0.62rem;gap:2px;border:none;background:none;}
+.mbt.act{color:var(–yl);}
+.mbi{font-size:1rem;}
+@media(max-width:600px){.sidebar{display:none;}.mobnav{display:block;}.main{padding:12px;}.hero h1{font-size:1.5rem;}}
+.sec{display:none;}
+.sec.act{display:block;}
+.ptit{font-size:1rem;font-weight:700;margin-bottom:14px;}
+.card{background:var(–bg1);border:1px solid var(–bdr);border-radius:10px;padding:14px;margin-bottom:14px;}
+.ctit{font-size:0.72rem;color:var(–mu);margin-bottom:7px;text-transform:uppercase;letter-spacing:0.05em;}
+.bh{text-align:center;padding:20px 14px;}
+.bamt{font-size:2rem;font-weight:800;color:var(–yl);}
+.bsub{font-size:0.8rem;color:var(–tx2);margin-top:3px;}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.sbox{background:var(–bg2);border-radius:7px;padding:10px;}
+.sbl2{font-size:0.7rem;color:var(–mu);margin-bottom:3px;}
+.sbv{font-size:0.95rem;font-weight:700;}
+.ctabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.ctab{background:var(–bg2);border:none;border-radius:7px;padding:7px 12px;cursor:pointer;font-size:0.8rem;color:var(–tx2);}
+.ctab.act{background:var(–yl);color:#000;font-weight:700;}
+.ttabs{display:flex;margin-bottom:14px;border-radius:7px;overflow:hidden;border:1px solid var(–bdr);}
+.ttab{flex:1;padding:9px;text-align:center;cursor:pointer;font-weight:700;font-size:0.85rem;background:var(–bg2);color:var(–tx2);border:none;}
+.ttab.buy.act{background:var(–gn);color:#000;}
+.ttab.sell.act{background:var(–rd);color:#fff;}
+.pctbs{display:flex;gap:5px;margin-top:7px;}
+.pctb{flex:1;background:var(–bg2);border:1px solid var(–bdr);border-radius:5px;padding:5px;text-align:center;cursor:pointer;font-size:0.72rem;}
+.txi{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(–bdr);}
+.txic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
+.txin{flex:1;}
+.txtt{font-weight:600;font-size:0.85rem;}
+.txdt{font-size:0.72rem;color:var(–mu);}
+.txam{font-weight:700;font-size:0.88rem;}
+.astats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px;}
+.astat{background:var(–bg2);border-radius:8px;padding:12px;text-align:center;}
+.asv{font-size:1.3rem;font-weight:800;color:var(–yl);}
+.asl{font-size:0.7rem;color:var(–mu);margin-top:2px;}
+.sc{background:var(–bg2);border:1px solid var(–bdr);border-radius:9px;padding:12px;margin-bottom:9px;}
+.sca{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px;}
+.wdc{background:var(–bg2);border:1px solid var(–bdr);border-radius:9px;padding:12px;margin-bottom:9px;}
+.bdg{display:inline-block;padding:2px 9px;border-radius:18px;font-size:0.7rem;font-weight:700;}
+.bdgP{background:rgba(240,185,11,0.2);color:var(–yl);}
+.bdgA{background:rgba(14,203,129,0.2);color:var(–gn);}
+.bdgR{background:rgba(246,70,93,0.2);color:var(–rd);}
+.atabs{display:flex;gap:7px;margin-bottom:14px;}
+.atab{padding:6px 14px;border-radius:18px;cursor:pointer;font-size:0.8rem;font-weight:600;background:var(–bg2);color:var(–tx2);border:1px solid var(–bdr);}
+.atab.act{background:var(–yl);color:#000;border-color:var(–yl);}
+#pgTerms{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(–bg0);z-index:200;overflow-y:auto;padding:20px;}
+.trmi{max-width:600px;margin:0 auto;}
+</style>
+
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- TERMS PAGE -->
+
+<div id="pgTerms">
+  <div class="trmi">
+    <button class="btn bGh bSm" onclick="closeTerms()" style="margin-bottom:16px;">&#8592; Back</button>
+    <h2 style="color:var(--yl);margin-bottom:14px;">Terms &amp; Conditions</h2>
+    <p style="color:var(--tx2);line-height:1.7;margin-bottom:10px;font-size:0.85rem;"><strong style="color:var(--tx);">1. Platform.</strong> TradePro is a crypto trading platform. All trades are executed within the platform.</p>
+    <p style="color:var(--tx2);line-height:1.7;margin-bottom:10px;font-size:0.85rem;"><strong style="color:var(--tx);">2. Withdrawals.</strong> All withdrawals processed in Bitcoin. A <strong style="color:var(--rd);">30% processing fee</strong> applies to all withdrawals. Processing takes 1-5 business days.</p>
+    <p style="color:var(--tx2);line-height:1.7;margin-bottom:10px;font-size:0.85rem;"><strong style="color:var(--tx);">3. Risk.</strong> Crypto trading involves significant risk. Past performance does not guarantee future results.</p>
+    <p style="color:var(--tx2);line-height:1.7;margin-bottom:10px;font-size:0.85rem;"><strong style="color:var(--tx);">4. Fees.</strong> TradePro charges a 30% fee on all withdrawals covering platform costs.</p>
+  </div>
+</div>
+
+<!-- LOGIN OVERLAY -->
+
+<div class="ov" id="ovLogin">
+  <div class="ob">
+    <div class="oh"><h3>Sign In</h3><button class="oc" onclick="closeOv('ovLogin')">&#215;</button></div>
+    <div class="obb">
+      <div id="stuLoginForm">
+        <div class="fg"><label class="fl">Email</label><input class="inp" id="lEmail" type="email" placeholder="you@email.com"></div>
+        <div class="fg">
+          <label class="fl">Password</label>
+          <div style="position:relative;">
+            <input class="inp" id="lPass" type="password" placeholder="Password" style="padding-right:56px;">
+            <button onclick="togglePw('lPass',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mu);font-size:0.75rem;font-weight:700;">SHOW</button>
+          </div>
+        </div>
+        <div class="ferr" id="lErr"></div>
+        <button class="btn bYl" style="width:100%;padding:12px;" onclick="doLogin()">Sign In</button>
+        <p style="text-align:center;margin-top:14px;font-size:0.8rem;color:var(--mu);">No account? <span style="color:var(--yl);cursor:pointer;" onclick="closeOv('ovLogin');openOv('ovReg')">Create one</span></p>
+      </div>
+      <div id="admLoginForm" style="display:none;">
+        <p style="text-align:center;color:var(--yl);font-weight:700;margin-bottom:14px;">Admin Access</p>
+        <div class="fg"><label class="fl">Admin Password</label><input class="inp" id="aPass" type="password" placeholder="Admin password"></div>
+        <div class="ferr" id="aErr"></div>
+        <button class="btn bYl" style="width:100%;padding:12px;" onclick="doAdminLogin()">Admin Login</button>
+        <p style="text-align:center;margin-top:12px;font-size:0.78rem;color:var(--mu);cursor:pointer;" onclick="showStuLogin()">Back to student login</p>
+      </div>
+      <div style="text-align:center;margin-top:20px;">
+        <button id="admDot" onclick="admTap()" style="width:8px;height:8px;background:var(--bdr);border-radius:50%;border:none;cursor:pointer;padding:0;display:inline-block;"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER OVERLAY -->
+
+<div class="ov" id="ovReg">
+  <div class="ob">
+    <div class="oh"><h3>Create Account</h3><button class="oc" onclick="closeOv('ovReg')">&#215;</button></div>
+    <div class="obb">
+      <div class="fg"><label class="fl">Full Name</label><input class="inp" id="rName" type="text" placeholder="John Smith"></div>
+      <div class="fg"><label class="fl">Email</label><input class="inp" id="rEmail" type="email" placeholder="you@email.com"></div>
+      <div class="fg">
+        <label class="fl">Password</label>
+        <div style="position:relative;">
+          <input class="inp" id="rPass" type="password" placeholder="Min 6 characters" style="padding-right:56px;">
+          <button onclick="togglePw('rPass',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--mu);font-size:0.75rem;font-weight:700;">SHOW</button>
+        </div>
+      </div>
+      <div class="fg" style="display:flex;align-items:flex-start;gap:8px;">
+        <input type="checkbox" id="rTerms" style="margin-top:3px;flex-shrink:0;">
+        <label for="rTerms" style="font-size:0.8rem;color:var(--tx2);cursor:pointer;">I agree to the <span style="color:var(--yl);" onclick="openTerms()">Terms &amp; Conditions</span> including the 30% withdrawal fee</label>
+      </div>
+      <div class="ferr" id="rErr"></div>
+      <button class="btn bYl" style="width:100%;padding:12px;" onclick="doRegister()">Create Account</button>
+      <p style="text-align:center;margin-top:14px;font-size:0.8rem;color:var(--mu);">Have account? <span style="color:var(--yl);cursor:pointer;" onclick="closeOv('ovReg');openOv('ovLogin')">Sign in</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+
+<div class="ov" id="ovModal">
+  <div class="ob">
+    <div class="oh"><h3 id="modalTitle">Confirm</h3><button class="oc" onclick="closeOv('ovModal')">&#215;</button></div>
+    <div class="obb">
+      <div id="modalMsg" style="margin-bottom:14px;color:var(--tx2);font-size:0.88rem;line-height:1.6;"></div>
+      <div id="modalBtns" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+
+<div class="ov" id="ovNotifs">
+  <div class="ob">
+    <div class="oh"><h3>Notifications</h3><button class="oc" onclick="closeOv('ovNotifs')">&#215;</button></div>
+    <div class="obb" id="notifBody"></div>
+  </div>
+</div>
+
+<!-- LANDING PAGE -->
+
+<div id="pgLand">
+  <nav class="lnav">
+    <div class="logo">&#x20BF; TradePro</div>
+    <div class="lnavr">
+      <button class="btn bOut bSm" onclick="openOv('ovLogin')">Sign In</button>
+      <button class="btn bYl bSm" onclick="openOv('ovReg')">Get Started</button>
+    </div>
+  </nav>
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="tickerEl"></div>
+  </div>
+  <div class="hero">
+    <h1>Trade Crypto<br><span>Like a Pro</span></h1>
+    <p>Access real-time markets, build your portfolio, and grow your wealth on the most trusted platform.</p>
+    <div class="hbtns">
+      <button class="btn bYl" onclick="openOv('ovReg')">Create Free Account</button>
+      <button class="btn bOut" onclick="openOv('ovLogin')">Sign In</button>
+    </div>
+  </div>
+  <div class="statsrow">
+    <div class="si"><div class="sv">$2.4B+</div><div class="sl">Daily Volume</div></div>
+    <div class="si"><div class="sv">500K+</div><div class="sl">Active Traders</div></div>
+    <div class="si"><div class="sv" id="btcPrice">$67,240</div><div class="sl">BTC Price</div></div>
+  </div>
+  <div class="feats">
+    <div class="fc"><div class="fi">&#x26A1;</div><div class="ft">Instant Trading</div><div class="fd">Execute trades instantly with real-time price feeds.</div></div>
+    <div class="fc"><div class="fi">&#x1F4B0;</div><div class="ft">Grow Wealth</div><div class="fd">Track performance, P&amp;L and optimize strategy.</div></div>
+    <div class="fc"><div class="fi">&#x1F512;</div><div class="ft">Secure Platform</div><div class="fd">Bank-grade security with KYC verification.</div></div>
+    <div class="fc"><div class="fi">&#x1F4F1;</div><div class="ft">Mobile First</div><div class="fd">Full platform experience on any device.</div></div>
+  </div>
+  <div class="msec">
+    <h2>Live Markets</h2>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Asset</th><th>Price</th><th>24h</th><th>Volume</th><th></th></tr></thead>
+        <tbody id="landMkt"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="lft">&copy; 2025 TradePro &nbsp;|&nbsp; <span style="cursor:pointer;text-decoration:underline;" onclick="openTerms()">Terms &amp; Conditions</span></div>
+</div>
+
+<!-- APP -->
+
+<div id="pgApp">
+  <nav class="anav">
+    <div class="alogo">&#x20BF; TradePro</div>
+    <div class="anavr">
+      <div class="abal">Bal: <b id="appBal">$0</b></div>
+      <button class="nbtn" id="notifBtn" onclick="openNotifs()" style="display:none;">&#x1F514;<span class="nbdg" id="notifBadge"></span></button>
+      <button class="av" id="appAvatar" onclick="doLogout()">U</button>
+    </div>
+  </nav>
+  <div class="abody">
+    <div class="sidebar" id="appSidebar"></div>
+    <div class="main" id="appMain"></div>
+  </div>
+  <div class="mobnav" id="mobNav"><div class="mobnavi" id="mobNavInner"></div></div>
+</div>
+
+<script>
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:12px;font-size:14px;z-index:9999;word-break:break-all;';
+  d.textContent = 'ERROR line ' + line + ': ' + msg;
+  document.body.appendChild(d);
+  return false;
+};
+// ============================
+// SUPABASE CONFIG
+// ============================
+var SB_URL = 'https://aqquchkjevkkwpenpwrs.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxcXVjaGtqZXZra3dwZW5wd3JzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxOTg2NzQsImV4cCI6MjA4ODc3NDY3NH0.Z1IOY65pO7_7EBROW3Iico3AuRQhdGMbQvWwsPX-pmI';
+
+function sbFetch(method, path, body, cb) {
+  try {
+    var url = SB_URL + '/rest/v1/' + path;
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('apikey', SB_KEY);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + SB_KEY);
+    if (method === 'POST') {
+      xhr.setRequestHeader('Prefer', 'resolution=merge-duplicates,return=minimal');
+    }
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+      var d = null;
+      try { d = xhr.responseText ? JSON.parse(xhr.responseText) : []; } catch(e) { d = []; }
+      if (cb) cb(null, d);
+    };
+    xhr.onerror = function() { if (cb) cb('error', null); };
+    xhr.send(body ? JSON.stringify(body) : null);
+  } catch(e) {
+    if (cb) cb(e, null);
+  }
+}
+
+function dbGetUser(email, cb) {
+  var local = lsGetUser(email);
+  sbFetch('GET', 'users?email=eq.' + encodeURIComponent(email) + '&limit=1', null, function(err, rows) {
+    if (!err && rows && rows.length > 0) {
+      var u = dbToUser(rows[0]);
+      lsSaveUser(u);
+      cb(u);
+    } else {
+      cb(local);
+    }
+  });
+}
+
+function dbSaveUser(u, cb) {
+  lsSaveUser(u);
+  var row = {
+    email: u.email, name: u.name, pass: u.pass,
+    cash_balance: u.cash || 0,
+    trading_balance: u.trade || 0,
+    holdings: u.holdings || {},
+    transactions: u.txs || [],
+    notifications: u.notifs || [],
+    kyc: u.kyc || 'none',
+    phone: u.phone || '',
+    country: u.country || '',
+    dob: u.dob || '',
+    joined: u.joined || ''
+  };
+  sbFetch('POST', 'users', row, function() { if (cb) cb(); });
+}
+
+function dbGetAllUsers(cb) {
+  sbFetch('GET', 'users?select=*&limit=500', null, function(err, rows) {
+    if (!err && rows && rows.length > 0) {
+      var arr = [];
+      for (var i = 0; i < rows.length; i++) arr.push(dbToUser(rows[i]));
+      cb(arr);
+    } else {
+      cb(lsGetAll());
+    }
+  });
+}
+
+function dbSaveWD(arr, cb) {
+  lsSaveWDs(arr);
+  sbFetch('DELETE', 'withdrawals?id=neq.PLACEHOLDER', null, function() {
+    if (!arr.length) { if (cb) cb(); return; }
+    var rows = [];
+    for (var i = 0; i < arr.length; i++) {
+      rows.push({ id: String(arr[i].id), email: arr[i].email || '', name: arr[i].name || '', wallet: arr[i].wallet || '', amount: arr[i].amount || 0, status: arr[i].status || 'pending', date: arr[i].date || '' });
+    }
+    sbFetch('POST', 'withdrawals', rows, function() { if (cb) cb(); });
+  });
+}
+
+function dbGetWDs(cb) {
+  sbFetch('GET', 'withdrawals?select=*&limit=500', null, function(err, rows) {
+    if (!err && rows && rows.length > 0) { lsSaveWDs(rows); cb(rows); }
+    else cb(lsGetWDs());
+  });
+}
+
+function dbToUser(d) {
+  return { email: d.email, name: d.name, pass: d.pass, cash: d.cash_balance || 0, trade: d.trading_balance || 0, holdings: d.holdings || {}, txs: d.transactions || [], notifs: d.notifications || [], kyc: d.kyc || 'none', phone: d.phone || '', country: d.country || '', dob: d.dob || '', joined: d.joined || '' };
+}
+
+// ============================
+// LOCAL STORAGE
+// ============================
+function lsKey(e) { return 'tp_' + e.replace(/[^a-z0-9]/gi, '_'); }
+function lsSaveUser(u) {
+  try {
+    localStorage.setItem(lsKey(u.email), JSON.stringify(u));
+    var all = lsGetAll(), found = false;
+    for (var i = 0; i < all.length; i++) { if (all[i].email === u.email) { all[i] = u; found = true; break; } }
+    if (!found) all.push(u);
+    localStorage.setItem('tp_all', JSON.stringify(all));
+  } catch(e) {}
+}
+function lsGetUser(em) { try { var r = localStorage.getItem(lsKey(em)); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
+function lsGetAll() { try { var r = localStorage.getItem('tp_all'); return r ? JSON.parse(r) : []; } catch(e) { return []; } }
+function lsSaveWDs(a) { try { localStorage.setItem('tp_wds', JSON.stringify(a)); } catch(e) {} }
+function lsGetWDs() { try { var r = localStorage.getItem('tp_wds'); return r ? JSON.parse(r) : []; } catch(e) { return []; } }
+
+// ============================
+// STATE
+// ============================
+var ADMIN_PASS = 'admin123';
+var ADMIN_EMAIL = 'admin@tradepro.com';
+var allUsers = [];
+var allWDs = [];
+var session = null;
+var tapCount = 0;
+var tapTimer = null;
+var tradeMode = { coin: 'BTC', side: 'buy' };
+
+try { session = JSON.parse(localStorage.getItem('tp_sess') || 'null'); } catch(e) { session = null; }
+
+var COINS = [
+  { id: 'BTC', name: 'Bitcoin',  icon: 'B', color: '#f0b90b', bg: '#2a2000' },
+  { id: 'ETH', name: 'Ethereum', icon: 'E', color: '#6366f1', bg: '#1a1840' },
+  { id: 'SOL', name: 'Solana',   icon: 'S', color: '#9945ff', bg: '#1a0d30' },
+  { id: 'BNB', name: 'BNB',      icon: 'N', color: '#f3ba2f', bg: '#251800' },
+  { id: 'XRP', name: 'XRP',      icon: 'X', color: '#00aae4', bg: '#001a26' },
+  { id: 'ADA', name: 'Cardano',  icon: 'A', color: '#0033ad', bg: '#000d30' }
+];
+
+var prices = { BTC: 67240, ETH: 3510, SOL: 162, BNB: 580, XRP: 0.58, ADA: 0.44 };
+var changes = { BTC: 2.1, ETH: 1.4, SOL: -0.8, BNB: 0.6, XRP: -1.2, ADA: 0.9 };
+var history = { BTC: [], ETH: [], SOL: [], BNB: [], XRP: [], ADA: [] };
+var VOLS = { BTC: '$38B', ETH: '$18B', SOL: '$4B', BNB: '$3B', XRP: '$3B', ADA: '$1B' };
+
+// init price history
+for (var ci = 0; ci < COINS.length; ci++) {
+  for (var hi = 0; hi < 15; hi++) {
+    history[COINS[ci].id].push(prices[COINS[ci].id] * (0.97 + Math.random() * 0.06));
+  }
+}
+
+// ============================
+// HELPERS
+// ============================
+function fUSD(n) {
+  var v = parseFloat(n) || 0;
+  if (v >= 1000) {
+    var s = v.toFixed(2).split('.');
+    var intPart = s[0], dec = s[1], out = '', len = intPart.length;
+    for (var i = 0; i < len; i++) {
+      if (i > 0 && (len - i) % 3 === 0) out += ',';
+      out += intPart[i];
+    }
+    return '$' + out + '.' + dec;
+  }
+  if (v >= 1) return '$' + v.toFixed(2);
+  return '$' + v.toFixed(4);
+}
+function fCoin(n, id) {
+  var v = parseFloat(n) || 0;
+  if (id === 'BTC') return v.toFixed(6);
+  if (id === 'ETH') return v.toFixed(5);
+  return v.toFixed(4);
+}
+function nowStr() {
+  var d = new Date();
+  return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+function saveSess() { try { localStorage.setItem('tp_sess', JSON.stringify(session)); } catch(e) {} }
+function getUser() {
+  if (!session || session.isAdmin) return null;
+  for (var i = 0; i < allUsers.length; i++) { if (allUsers[i].email === session.email) return allUsers[i]; }
+  return session;
+}
+function saveUser(u) {
+  var found = false;
+  for (var i = 0; i < allUsers.length; i++) { if (allUsers[i].email === u.email) { allUsers[i] = u; found = true; break; } }
+  if (!found) allUsers.push(u);
+  session = u;
+  saveSess();
+  dbSaveUser(u, null);
+}
+function holdingsValue(u) {
+  if (!u || !u.holdings) return 0;
+  var v = 0, k;
+  for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].amt) v += u.holdings[k].amt * (prices[k] || 0); }
+  return v;
+}
+function holdingsCost(u) {
+  if (!u || !u.holdings) return 0;
+  var v = 0, k;
+  for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].cost) v += u.holdings[k].cost; }
+  return v;
+}
+function fixUser(u) {
+  if (!u.holdings) u.holdings = {};
+  if (!u.txs) u.txs = [];
+  if (!u.notifs) u.notifs = [];
+  if (typeof u.cash !== 'number') u.cash = 0;
+  if (typeof u.trade !== 'number') u.trade = 0;
+  return u;
+}
+
+var toastTimer = null;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.display = 'block';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.style.display = 'none'; }, 2500);
+}
+
+function openOv(id) {
+  var el = document.getElementById(id);
+  if (el) { el.style.display = 'flex'; }
+}
+function closeOv(id) {
+  var el = document.getElementById(id);
+  if (el) { el.style.display = 'none'; }
+}
+function openTerms() {
+  var t = document.getElementById('pgTerms');
+  if (t) t.style.display = 'block';
+}
+function closeTerms() {
+  var t = document.getElementById('pgTerms');
+  if (t) t.style.display = 'none';
+}
+function showModal(title, msg, btns) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalMsg').innerHTML = msg;
+  var bb = document.getElementById('modalBtns');
+  bb.innerHTML = '';
+  for (var i = 0; i < btns.length; i++) {
+    (function(b) {
+      var btn = document.createElement('button');
+      btn.className = 'btn ' + (b.cls || 'bGh') + ' bSm';
+      btn.textContent = b.label;
+      btn.onclick = b.fn;
+      bb.appendChild(btn);
+    })(btns[i]);
+  }
+  openOv('ovModal');
+}
+function togglePw(id, btn) {
+  var inp = document.getElementById(id);
+  if (!inp) return;
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'HIDE'; }
+  else { inp.type = 'password'; btn.textContent = 'SHOW'; }
+}
+
+// ============================
+// PRICE ENGINE
+// ============================
+function priceTick() {
+  var i, co;
+  for (i = 0; i < COINS.length; i++) {
+    co = COINS[i];
+    var d = (Math.random() - 0.488) * 0.004;
+    prices[co.id] = Math.max(prices[co.id] * (1 + d), 0.001);
+    changes[co.id] += d * 100;
+    history[co.id].push(prices[co.id]);
+    if (history[co.id].length > 30) history[co.id].shift();
+  }
+  renderTicker();
+  var bp = document.getElementById('btcPrice');
+  if (bp) bp.textContent = fUSD(prices.BTC);
+  renderLandMkt();
+  if (session && !session.isAdmin) {
+    updateAppBal();
+    var secs = ['portfolio', 'trading', 'market', 'history', 'profile', 'kyc', 'withdraw', 'changepw'];
+    for (i = 0; i < secs.length; i++) {
+      var s = document.getElementById('sec_' + secs[i]);
+      if (s && s.style.display !== 'none') {
+        if (secs[i] === 'portfolio') renderPortfolio();
+        if (secs[i] === 'market') renderMarket();
+        if (secs[i] === 'trading') { var cv = document.getElementById('tradeChart'); if (cv) drawChart(tradeMode.coin); }
+        break;
+      }
+    }
+  }
+}
+setInterval(priceTick, 3000);
+
+function renderTicker() {
+  var out = '', i, co;
+  for (i = 0; i < COINS.length; i++) {
+    co = COINS[i];
+    var chg = changes[co.id], cls = chg >= 0 ? 'gn' : 'rd';
+    out += '<span class="ti"><span style="color:var(--tx2);">' + co.id + '</span><span style="font-weight:700;">' + fUSD(prices[co.id]) + '</span><span class="' + cls + '">' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%</span></span>';
+  }
+  var el = document.getElementById('tickerEl');
+  if (el) el.innerHTML = out + out;
+}
+
+function renderLandMkt() {
+  var tb = document.getElementById('landMkt');
+  if (!tb) return;
+  var out = '', i, co;
+  for (i = 0; i < COINS.length; i++) {
+    co = COINS[i];
+    var chg = changes[co.id], cls = chg >= 0 ? 'gn' : 'rd';
+    out += '<tr>';
+    out += '<td><div class="cc"><div class="cb" style="background:' + co.bg + ';color:' + co.color + ';">' + co.icon + '</div><div><div style="font-weight:700;">' + co.name + '</div><div style="font-size:0.7rem;color:var(--mu);">' + co.id + '</div></div></div></td>';
+    out += '<td>' + fUSD(prices[co.id]) + '</td>';
+    out += '<td class="' + cls + '">' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%</td>';
+    out += '<td style="color:var(--mu);">' + VOLS[co.id] + '</td>';
+    out += '<td><button class="btn bYl bSm" onclick="openOv(\'ovReg\')">Trade</button></td>';
+    out += '</tr>';
+  }
+  tb.innerHTML = out;
+}
+
+// ============================
+// AUTH
+// ============================
+function admTap() {
+  tapCount++;
+  if (tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(function() { tapCount = 0; }, 2000);
+  if (tapCount >= 5) {
+    tapCount = 0;
+    document.getElementById('stuLoginForm').style.display = 'none';
+    document.getElementById('admLoginForm').style.display = 'block';
+  }
+}
+function showStuLogin() {
+  document.getElementById('stuLoginForm').style.display = 'block';
+  document.getElementById('admLoginForm').style.display = 'none';
+}
+
+function doLogin() {
+  var email = (document.getElementById('lEmail').value || '').trim().toLowerCase();
+  var pass = (document.getElementById('lPass').value || '').trim();
+  var errEl = document.getElementById('lErr');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Enter email and password.'; return; }
+  errEl.textContent = 'Signing in...';
+  dbGetUser(email, function(u) {
+    if (!u) { errEl.textContent = 'Account not found.'; return; }
+    if (u.pass !== pass) { errEl.textContent = 'Wrong password.'; return; }
+    errEl.textContent = '';
+    var found = false;
+    for (var i = 0; i < allUsers.length; i++) { if (allUsers[i].email === u.email) { allUsers[i] = u; found = true; break; } }
+    if (!found) allUsers.push(u);
+    session = u;
+    saveSess();
+    closeOv('ovLogin');
+    launchApp(false);
+    showToast('Welcome back, ' + u.name + '!');
+  });
+}
+
+function doAdminLogin() {
+  var pass = (document.getElementById('aPass').value || '').trim();
+  var errEl = document.getElementById('aErr');
+  errEl.textContent = '';
+  if (!pass) { errEl.textContent = 'Enter password.'; return; }
+  if (pass !== ADMIN_PASS) { errEl.textContent = 'Wrong password.'; return; }
+  session = { name: 'Admin', email: ADMIN_EMAIL, isAdmin: true };
+  saveSess();
+  closeOv('ovLogin');
+  launchApp(true);
+  showToast('Welcome, Admin!');
+}
+
+function doRegister() {
+  var name = (document.getElementById('rName').value || '').trim();
+  var email = (document.getElementById('rEmail').value || '').trim().toLowerCase();
+  var pass = (document.getElementById('rPass').value || '').trim();
+  var terms = document.getElementById('rTerms').checked;
+  var errEl = document.getElementById('rErr');
+  errEl.textContent = '';
+  if (!name || !email || !pass) { errEl.textContent = 'Fill in all fields.'; return; }
+  if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (!terms) { errEl.textContent = 'Please accept the Terms and Conditions.'; return; }
+  errEl.textContent = 'Creating account...';
+  dbGetUser(email, function(existing) {
+    if (existing) { errEl.textContent = 'Email already registered.'; return; }
+    var u = fixUser({ name: name, email: email, pass: pass, cash: 0, trade: 0, holdings: {}, txs: [], notifs: [], kyc: 'none', joined: nowStr() });
+    allUsers.push(u);
+    dbSaveUser(u, function() {
+      session = u;
+      saveSess();
+      closeOv('ovReg');
+      errEl.textContent = '';
+      launchApp(false);
+      showToast('Welcome to TradePro, ' + name + '!');
+    });
+  });
+}
+
+function doLogout() {
+  session = null;
+  try { localStorage.removeItem('tp_sess'); } catch(e) {}
+  document.getElementById('pgApp').style.display = 'none';
+  document.getElementById('pgLand').style.display = 'block';
+  showToast('Logged out.');
+}
+
+// ============================
+// APP LAUNCH
+// ============================
+var NAV = [
+  { id: 'portfolio', icon: '&#x1F4BC;', label: 'Portfolio' },
+  { id: 'trading',   icon: '&#x1F4C8;', label: 'Trading' },
+  { id: 'market',    icon: '&#x1F30E;', label: 'Market' },
+  { id: 'history',   icon: '&#x1F4CB;', label: 'History' },
+  { id: 'profile',   icon: '&#x1F464;', label: 'Profile' }
+];
+var ALL_SECS = ['portfolio', 'trading', 'market', 'history', 'profile', 'kyc', 'withdraw', 'changepw'];
+
+function launchApp(isAdmin) {
+  document.getElementById('pgLand').style.display = 'none';
+  document.getElementById('pgApp').style.display = 'flex';
+  var av = document.getElementById('appAvatar');
+  if (av && session) av.textContent = session.name.charAt(0).toUpperCase();
+
+  if (isAdmin || session.isAdmin) {
+    document.getElementById('notifBtn').style.display = 'none';
+    document.getElementById('mobNav').style.display = 'none';
+    document.getElementById('appBal').textContent = 'Admin';
+    document.getElementById('appSidebar').innerHTML = '';
+    var mainEl = document.getElementById('appMain');
+    mainEl.innerHTML = '<p style="color:var(--mu);">Loading...</p>';
+    dbGetAllUsers(function(users) {
+      for (var i = 0; i < users.length; i++) {
+        var f = false;
+        for (var j = 0; j < allUsers.length; j++) { if (allUsers[j].email === users[i].email) { allUsers[j] = users[i]; f = true; break; } }
+        if (!f) allUsers.push(users[i]);
+      }
+      dbGetWDs(function(wds) {
+        allWDs = wds || [];
+        renderAdmin();
+      });
+    });
+  } else {
+    document.getElementById('notifBtn').style.display = 'flex';
+    document.getElementById('mobNav').style.display = 'block';
+    buildStudentUI();
+    goSection('portfolio');
+  }
+}
+
+function updateAppBal() {
+  var el = document.getElementById('appBal');
+  if (!el || !session || session.isAdmin) return;
+  var u = getUser();
+  if (!u) return;
+  el.textContent = fUSD((u.cash || 0) + (u.trade || 0) + holdingsValue(u));
+}
+
+function buildStudentUI() {
+  var sb = '', mob = '', i;
+  for (i = 0; i < NAV.length; i++) {
+    var it = NAV[i];
+    sb += '<button class="sbl" id="sb_' + it.id + '" onclick="goSection(\'' + it.id + '\')">' + it.icon + ' ' + it.label + '</button>';
+    mob += '<button class="mbt" id="mb_' + it.id + '" onclick="goSection(\'' + it.id + '\')">';
+    mob += '<span class="mbi">' + it.icon + '</span>' + it.label + '</button>';
+  }
+  document.getElementById('appSidebar').innerHTML = sb;
+  document.getElementById('mobNavInner').innerHTML = mob;
+
+  var html = '';
+  for (i = 0; i < ALL_SECS.length; i++) {
+    html += '<div class="sec" id="sec_' + ALL_SECS[i] + '" style="display:none;"></div>';
+  }
+  document.getElementById('appMain').innerHTML = html;
+
+  try { var ts = localStorage.getItem('tp_trade'); if (ts) tradeMode = JSON.parse(ts); } catch(e) {}
+  updateAppBal();
+  refreshNotifBadge();
+}
+
+function goSection(id) {
+  var i;
+  for (i = 0; i < ALL_SECS.length; i++) {
+    var s = document.getElementById('sec_' + ALL_SECS[i]);
+    if (s) s.style.display = 'none';
+    var sbEl = document.getElementById('sb_' + ALL_SECS[i]);
+    if (sbEl) sbEl.className = 'sbl';
+    var mbEl = document.getElementById('mb_' + ALL_SECS[i]);
+    if (mbEl) mbEl.className = 'mbt';
+  }
+  var sec = document.getElementById('sec_' + id);
+  if (sec) sec.style.display = 'block';
+  var sbActive = document.getElementById('sb_' + id);
+  if (sbActive) sbActive.className = 'sbl act';
+  var mbActive = document.getElementById('mb_' + id);
+  if (mbActive) mbActive.className = 'mbt act';
+
+  if (id === 'portfolio') renderPortfolio();
+  else if (id === 'trading') renderTrading();
+  else if (id === 'market') renderMarket();
+  else if (id === 'history') renderHistory();
+  else if (id === 'profile') renderProfile();
+  else if (id === 'kyc') renderKYC();
+  else if (id === 'withdraw') renderWithdraw();
+  else if (id === 'changepw') renderChangePW();
+}
+
+// ============================
+// PORTFOLIO
+// ============================
+function renderPortfolio() {
+  var sec = document.getElementById('sec_portfolio');
+  if (!sec) return;
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var hv = holdingsValue(u), hc = holdingsCost(u), pnl = hv - hc;
+  var total = (u.cash || 0) + (u.trade || 0) + hv;
+  var pct = hc > 0 ? (pnl / hc * 100) : 0;
+
+  var html = '<div class="card"><div class="bh">';
+  html += '<div class="ctit">Total Portfolio Value</div>';
+  html += '<div class="bamt">' + fUSD(total) + '</div>';
+  html += '<div class="bsub">P&amp;L: <span class="' + (pnl >= 0 ? 'gn' : 'rd') + '">' + (pnl >= 0 ? '+' : '') + fUSD(pnl) + ' (' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%)</span></div>';
+  html += '</div>';
+  html += '<div class="sgrid">';
+  html += '<div class="sbox"><div class="sbl2">Cash Balance</div><div class="sbv">' + fUSD(u.cash) + '</div></div>';
+  html += '<div class="sbox"><div class="sbl2">Trading Balance</div><div class="sbv">' + fUSD(u.trade) + '</div></div>';
+  html += '<div class="sbox"><div class="sbl2">Holdings Value</div><div class="sbv">' + fUSD(hv) + '</div></div>';
+  html += '<div class="sbox"><div class="sbl2">Total Trades</div><div class="sbv">' + (u.txs ? u.txs.length : 0) + '</div></div>';
+  html += '</div></div>';
+
+  var hasH = false, k;
+  for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].amt > 0) { hasH = true; break; } }
+  if (hasH) {
+    html += '<div class="card"><div class="ctit">My Holdings</div><div class="tw"><table>';
+    html += '<thead><tr><th>Asset</th><th>Amount</th><th>Value</th><th>P&amp;L</th></tr></thead><tbody>';
+    for (k in u.holdings) {
+      var h = u.holdings[k];
+      if (!h || !h.amt) continue;
+      var val = h.amt * (prices[k] || 0), hp = val - (h.cost || 0);
+      html += '<tr><td><strong>' + k + '</strong></td><td>' + fCoin(h.amt, k) + '</td>';
+      html += '<td>' + fUSD(val) + '</td><td class="' + (hp >= 0 ? 'gn' : 'rd') + '">' + (hp >= 0 ? '+' : '') + fUSD(hp) + '</td></tr>';
+    }
+    html += '</tbody></table></div>';
+    html += '<button class="btn bRd bSm" style="margin-top:10px;" onclick="sellAllHoldings()">Sell All</button></div>';
+  }
+
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+  html += '<button class="btn bOut bSm" onclick="goSection(\'trading\')">Trade Now</button>';
+  html += '<button class="btn bOut bSm" onclick="goSection(\'withdraw\')">Withdraw</button>';
+  html += '</div>';
+  sec.innerHTML = html;
+}
+
+function sellAllHoldings() {
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var total = 0, k;
+  for (k in u.holdings) {
+    var h = u.holdings[k];
+    if (h && h.amt > 0) {
+      var val = h.amt * (prices[k] || 0);
+      total += val;
+      u.txs.push({ type: 'sell', coin: k, amt: h.amt, px: prices[k], total: val, date: nowStr() });
+      u.holdings[k] = { amt: 0, cost: 0 };
+    }
+  }
+  u.trade += total;
+  saveUser(u);
+  renderPortfolio();
+  showToast('Sold all for ' + fUSD(total));
+}
+
+// ============================
+// TRADING
+// ============================
+function renderTrading() {
+  var sec = document.getElementById('sec_trading');
+  if (!sec) return;
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+
+  var tabs = '', i, co;
+  for (i = 0; i < COINS.length; i++) {
+    co = COINS[i];
+    tabs += '<button class="ctab' + (tradeMode.coin === co.id ? ' act' : '') + '" onclick="setTradeCoin(\'' + co.id + '\')">' + co.id + '</button>';
+  }
+
+  var coin = null;
+  for (i = 0; i < COINS.length; i++) { if (COINS[i].id === tradeMode.coin) { coin = COINS[i]; break; } }
+  if (!coin) coin = COINS[0];
+
+  var chg = changes[coin.id], cls = chg >= 0 ? 'gn' : 'rd';
+  var holding = (u.holdings && u.holdings[coin.id]) ? u.holdings[coin.id] : { amt: 0, cost: 0 };
+
+  var html = '<div class="ctabs">' + tabs + '</div>';
+  html += '<div class="card" style="margin-bottom:10px;">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">';
+  html += '<div style="display:flex;align-items:center;gap:9px;">';
+  html += '<div class="cb" style="background:' + coin.bg + ';color:' + coin.color + ';">' + coin.icon + '</div>';
+  html += '<div><div style="font-weight:800;font-size:1rem;">' + fUSD(prices[coin.id]) + '</div>';
+  html += '<div class="' + cls + '">' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '% 24h</div></div></div>';
+  html += '<div style="font-size:0.78rem;color:var(--tx2);">Holding: <strong>' + fCoin(holding.amt, coin.id) + ' ' + coin.id + '</strong></div>';
+  html += '</div></div>';
+  html += '<div style="background:var(--bg2);border-radius:8px;overflow:hidden;margin-bottom:10px;"><canvas id="tradeChart" height="110"></canvas></div>';
+  html += '<div style="background:var(--bg1);border:1px solid var(--bdr);border-radius:10px;padding:14px;">';
+  html += '<div class="ttabs">';
+  html += '<button class="ttab buy' + (tradeMode.side === 'buy' ? ' act' : '') + '" onclick="setTradeSide(\'buy\')">BUY</button>';
+  html += '<button class="ttab sell' + (tradeMode.side === 'sell' ? ' act' : '') + '" onclick="setTradeSide(\'sell\')">SELL</button>';
+  html += '</div>';
+  html += '<div class="fg"><label class="fl">Amount (USD)</label><input class="inp" id="tradeAmt" type="number" placeholder="0.00" min="0">';
+  html += '<div class="pctbs"><button class="pctb" onclick="setPct(25)">25%</button><button class="pctb" onclick="setPct(50)">50%</button><button class="pctb" onclick="setPct(75)">75%</button><button class="pctb" onclick="setPct(100)">Max</button></div></div>';
+  html += '<div style="font-size:0.78rem;color:var(--tx2);margin-bottom:10px;">Trading Balance: <strong>' + fUSD(u.trade) + '</strong></div>';
+  html += '<button class="btn ' + (tradeMode.side === 'buy' ? 'bGn' : 'bRd') + '" style="width:100%;padding:12px;" onclick="executeTrade()">';
+  html += (tradeMode.side === 'buy' ? 'Buy ' : 'Sell ') + coin.id + '</button></div>';
+  sec.innerHTML = html;
+  setTimeout(function() { drawChart(coin.id); }, 50);
+}
+
+function setTradeCoin(id) {
+  tradeMode.coin = id;
+  try { localStorage.setItem('tp_trade', JSON.stringify(tradeMode)); } catch(e) {}
+  renderTrading();
+}
+function setTradeSide(s) {
+  tradeMode.side = s;
+  try { localStorage.setItem('tp_trade', JSON.stringify(tradeMode)); } catch(e) {}
+  renderTrading();
+}
+function setPct(p) {
+  var u = getUser();
+  if (!u) return;
+  var el = document.getElementById('tradeAmt');
+  if (!el) return;
+  if (tradeMode.side === 'buy') {
+    el.value = ((u.trade || 0) * p / 100).toFixed(2);
+  } else {
+    var h = (u.holdings && u.holdings[tradeMode.coin]) ? u.holdings[tradeMode.coin] : { amt: 0 };
+    el.value = (h.amt * prices[tradeMode.coin] * p / 100).toFixed(2);
+  }
+}
+function executeTrade() {
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var el = document.getElementById('tradeAmt');
+  var amt = parseFloat(el ? el.value : 0) || 0;
+  if (amt <= 0) { showToast('Enter an amount'); return; }
+  var cid = tradeMode.coin, px = prices[cid], coinAmt = amt / px;
+  var fm = '';
+  try { fm = localStorage.getItem('tp_fm_' + u.email) || ''; } catch(e) {}
+
+  if (tradeMode.side === 'buy') {
+    if ((u.trade || 0) < amt) { showToast('Insufficient trading balance'); return; }
+    u.trade -= amt;
+    if (!u.holdings[cid]) u.holdings[cid] = { amt: 0, cost: 0 };
+    u.holdings[cid].amt += coinAmt;
+    u.holdings[cid].cost += amt;
+    u.txs.push({ type: 'buy', coin: cid, amt: coinAmt, px: px, total: amt, date: nowStr() });
+    saveUser(u);
+    showToast('Bought ' + fCoin(coinAmt, cid) + ' ' + cid);
+  } else {
+    var h = u.holdings[cid] || { amt: 0, cost: 0 };
+    if (h.amt * px < amt - 0.01) { showToast('Insufficient ' + cid); return; }
+    var proceeds = amt;
+    if (fm === 'loss') proceeds = amt * 0.6;
+    else if (fm === 'profit') proceeds = amt * 1.4;
+    h.amt -= coinAmt;
+    h.cost = Math.max(0, h.cost - amt);
+    if (h.amt < 0.000001) { h.amt = 0; h.cost = 0; }
+    u.holdings[cid] = h;
+    u.trade += proceeds;
+    u.txs.push({ type: 'sell', coin: cid, amt: coinAmt, px: px, total: proceeds, date: nowStr() });
+    saveUser(u);
+    showToast('Sold ' + cid + ' for ' + fUSD(proceeds));
+  }
+  renderTrading();
+  updateAppBal();
+}
+
+function drawChart(cid) {
+  var cv = document.getElementById('tradeChart');
+  if (!cv || !cv.getContext) return;
+  cv.width = cv.parentElement ? cv.parentElement.offsetWidth : 300;
+  var ctx = cv.getContext('2d');
+  var data = history[cid] || [];
+  if (data.length < 2) return;
+  var W = cv.width, H = cv.height;
+  var mn = data[0], mx = data[0], i;
+  for (i = 0; i < data.length; i++) { if (data[i] < mn) mn = data[i]; if (data[i] > mx) mx = data[i]; }
+  var pad = (mx - mn) * 0.1 || 1; mn -= pad; mx += pad;
+  ctx.clearRect(0, 0, W, H);
+  ctx.beginPath();
+  for (i = 0; i < data.length; i++) {
+    var x = i / (data.length - 1) * W;
+    var y = H - ((data[i] - mn) / (mx - mn)) * H;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = data[data.length - 1] >= data[0] ? '#0ecb81' : '#f6465d';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+// ============================
+// MARKET
+// ============================
+function renderMarket() {
+  var sec = document.getElementById('sec_market');
+  if (!sec) return;
+  var html = '<div class="ptit">Live Markets</div><div class="tw"><table>';
+  html += '<thead><tr><th>Asset</th><th>Price</th><th>24h</th><th>Volume</th><th></th></tr></thead><tbody>';
+  var i, co;
+  for (i = 0; i < COINS.length; i++) {
+    co = COINS[i];
+    var chg = changes[co.id], cls = chg >= 0 ? 'gn' : 'rd';
+    html += '<tr>';
+    html += '<td><div class="cc"><div class="cb" style="background:' + co.bg + ';color:' + co.color + ';">' + co.icon + '</div><div><strong>' + co.name + '</strong><div style="font-size:0.7rem;color:var(--mu);">' + co.id + '</div></div></div></td>';
+    html += '<td>' + fUSD(prices[co.id]) + '</td>';
+    html += '<td class="' + cls + '">' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%</td>';
+    html += '<td style="color:var(--mu);">' + VOLS[co.id] + '</td>';
+    html += '<td><button class="btn bYl bSm" onclick="setTradeCoin(\'' + co.id + '\');goSection(\'trading\')">Trade</button></td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  sec.innerHTML = html;
+}
+
+// ============================
+// HISTORY
+// ============================
+function renderHistory() {
+  var sec = document.getElementById('sec_history');
+  if (!sec) return;
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var html = '<div class="ptit">Transaction History</div>';
+  if (!u.txs.length) { html += '<p style="color:var(--mu);">No transactions yet.</p>'; sec.innerHTML = html; return; }
+  var i, tx;
+  for (i = u.txs.length - 1; i >= 0; i--) {
+    tx = u.txs[i];
+    var isBuy = tx.type === 'buy';
+    html += '<div class="txi">';
+    html += '<div class="txic" style="background:' + (isBuy ? 'rgba(14,203,129,0.12)' : 'rgba(246,70,93,0.12)') + ';color:' + (isBuy ? 'var(--gn)' : 'var(--rd)') + ';">' + (isBuy ? '&#x2B06;' : '&#x2B07;') + '</div>';
+    html += '<div class="txin"><div class="txtt">' + (isBuy ? 'Bought' : 'Sold') + ' ' + (tx.coin || tx.type) + '</div><div class="txdt">' + (tx.date || '') + '</div></div>';
+    html += '<div class="txam ' + (isBuy ? 'rd' : 'gn') + '">' + (isBuy ? '-' : '+') + fUSD(tx.total) + '</div></div>';
+  }
+  sec.innerHTML = html;
+}
+
+// ============================
+// PROFILE
+// ============================
+var COUNTRIES = ['Afghanistan','Albania','Algeria','Argentina','Australia','Austria','Belgium','Brazil','Canada','Chile','China','Colombia','Denmark','Egypt','Finland','France','Germany','Ghana','Greece','Hungary','India','Indonesia','Ireland','Israel','Italy','Japan','Kenya','Malaysia','Mexico','Morocco','Netherlands','New Zealand','Nigeria','Norway','Pakistan','Philippines','Poland','Portugal','Romania','Russia','Saudi Arabia','Singapore','South Africa','South Korea','Spain','Sweden','Switzerland','Taiwan','Thailand','Turkey','UAE','United Kingdom','United States','Vietnam','Zimbabwe'];
+
+function renderProfile() {
+  var sec = document.getElementById('sec_profile');
+  if (!sec) return;
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var total = (u.cash || 0) + (u.trade || 0) + holdingsValue(u);
+  var html = '<div class="ptit">My Profile</div>';
+  html += '<div class="sgrid" style="margin-bottom:14px;">';
+  html += '<div class="sbox"><div class="sbl2">Total Value</div><div class="sbv">' + fUSD(total) + '</div></div>';
+  html += '<div class="sbox"><div class="sbl2">KYC Status</div><div class="sbv">' + (u.kyc || 'none') + '</div></div>';
+  html += '</div>';
+  html += '<div class="card">';
+  html += '<div class="fg"><label class="fl">Full Name</label><input class="inp" id="pName" value="' + (u.name || '').replace(/"/g, '&quot;') + '"></div>';
+  html += '<div class="fg"><label class="fl">Email</label><input class="inp" value="' + (u.email || '') + '" disabled style="opacity:0.5;"></div>';
+  html += '<div class="fg"><label class="fl">Phone</label><input class="inp" id="pPhone" type="tel" value="' + (u.phone || '') + '" placeholder="+1 234 567 8900"></div>';
+  html += '<div class="fg"><label class="fl">Country</label><select class="inp" id="pCountry"><option value="">Select country...</option>';
+  var i;
+  for (i = 0; i < COUNTRIES.length; i++) {
+    html += '<option value="' + COUNTRIES[i] + '"' + (u.country === COUNTRIES[i] ? ' selected' : '') + '>' + COUNTRIES[i] + '</option>';
+  }
+  html += '</select></div>';
+  html += '<div class="fg"><label class="fl">Date of Birth</label><input class="inp" id="pDob" type="date" value="' + (u.dob || '') + '"></div>';
+  html += '<button class="btn bYl" onclick="saveProfile()">Save Changes</button></div>';
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">';
+  html += '<button class="btn bOut bSm" onclick="goSection(\'kyc\')">Verify ID</button>';
+  html += '<button class="btn bOut bSm" onclick="goSection(\'changepw\')">Change Password</button>';
+  html += '<button class="btn bGh bSm" onclick="doLogout()">Logout</button>';
+  html += '</div>';
+  sec.innerHTML = html;
+}
+function saveProfile() {
+  var u = getUser();
+  if (!u) return;
+  var n = document.getElementById('pName'); if (n) u.name = n.value.trim();
+  var p = document.getElementById('pPhone'); if (p) u.phone = p.value.trim();
+  var c = document.getElementById('pCountry'); if (c) u.country = c.value;
+  var d = document.getElementById('pDob'); if (d) u.dob = d.value;
+  saveUser(u);
+  showToast('Profile saved!');
+  var av = document.getElementById('appAvatar');
+  if (av && u.name) av.textContent = u.name.charAt(0).toUpperCase();
+}
+
+// ============================
+// KYC
+// ============================
+function renderKYC() {
+  var sec = document.getElementById('sec_kyc');
+  if (!sec) return;
+  var u = getUser();
+  if (!u) return;
+  var html = '<div class="ptit">Identity Verification</div><div class="card">';
+  html += '<div style="margin-bottom:10px;">Status: <span class="bdg ' + (u.kyc === 'approved' ? 'bdgA' : u.kyc === 'pending' ? 'bdgP' : 'bdgR') + '">' + (u.kyc || 'none') + '</span></div>';
+  if (u.kyc === 'approved') {
+    html += '<p class="gn">&#x2713; Your identity has been verified.</p>';
+  } else {
+    html += '<div class="fg"><label class="fl">Government ID</label><input class="inp" type="file" accept="image/*,.pdf"></div>';
+    html += '<div class="fg"><label class="fl">Proof of Address</label><input class="inp" type="file" accept="image/*,.pdf"></div>';
+    html += '<button class="btn bYl" onclick="submitKYC()">Submit for Verification</button>';
+  }
+  html += '</div>';
+  sec.innerHTML = html;
+}
+function submitKYC() {
+  var u = getUser();
+  if (!u) return;
+  u.kyc = 'pending';
+  saveUser(u);
+  showToast('KYC submitted!');
+  renderKYC();
+}
+
+// ============================
+// CHANGE PASSWORD
+// ============================
+function renderChangePW() {
+  var sec = document.getElementById('sec_changepw');
+  if (!sec) return;
+  var html = '<div class="ptit">Change Password</div><div class="card">';
+  html += '<div class="fg"><label class="fl">Current Password</label><input class="inp" id="cpCur" type="password"></div>';
+  html += '<div class="fg"><label class="fl">New Password</label><input class="inp" id="cpNew" type="password"></div>';
+  html += '<div class="fg"><label class="fl">Confirm Password</label><input class="inp" id="cpCfm" type="password"></div>';
+  html += '<div class="ferr" id="cpErr"></div>';
+  html += '<button class="btn bYl" onclick="doChangePW()">Update Password</button></div>';
+  sec.innerHTML = html;
+}
+function doChangePW() {
+  var u = getUser();
+  if (!u) return;
+  var cur = document.getElementById('cpCur').value.trim();
+  var nw = document.getElementById('cpNew').value.trim();
+  var cf = document.getElementById('cpCfm').value.trim();
+  var err = document.getElementById('cpErr');
+  err.textContent = '';
+  if (cur !== u.pass) { err.textContent = 'Current password is incorrect.'; return; }
+  if (nw.length < 6) { err.textContent = 'Minimum 6 characters.'; return; }
+  if (nw !== cf) { err.textContent = 'Passwords do not match.'; return; }
+  u.pass = nw;
+  saveUser(u);
+  showToast('Password updated!');
+  renderChangePW();
+}
+
+// ============================
+// WITHDRAW
+// ============================
+function renderWithdraw() {
+  var sec = document.getElementById('sec_withdraw');
+  if (!sec) return;
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var avail = (u.cash || 0) + (u.trade || 0);
+  var html = '<div class="ptit">Withdraw Funds</div><div class="card">';
+  html += '<div style="background:rgba(246,70,93,0.1);border:1px solid rgba(246,70,93,0.3);border-radius:7px;padding:10px;margin-bottom:14px;font-size:0.82rem;color:var(--rd);">&#x26A0; 30% processing fee applies to all withdrawals.</div>';
+  html += '<div class="fg"><label class="fl">Available Balance</label><input class="inp" value="' + fUSD(avail) + '" disabled style="opacity:0.6;"></div>';
+  html += '<div class="fg"><label class="fl">Bitcoin Wallet Address</label><input class="inp" id="wdWallet" placeholder="bc1q..."></div>';
+  html += '<div class="fg"><label class="fl">Amount (USD)</label><input class="inp" id="wdAmt" type="number" placeholder="Min $100" min="100"></div>';
+  html += '<div class="ferr" id="wdErr"></div>';
+  html += '<button class="btn bYl" style="width:100%;" onclick="doWithdraw()">Request Withdrawal</button></div>';
+
+  var myWDs = [], i;
+  for (i = 0; i < allWDs.length; i++) { if (allWDs[i].email === u.email) myWDs.push(allWDs[i]); }
+  if (myWDs.length) {
+    html += '<div class="ptit" style="margin-top:14px;">My Requests</div>';
+    for (i = myWDs.length - 1; i >= 0; i--) {
+      var wd = myWDs[i];
+      html += '<div class="wdc"><div style="display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><div style="font-weight:700;">' + fUSD(wd.amount) + '</div><div style="font-size:0.72rem;color:var(--mu);">' + (wd.date || '') + '</div></div>';
+      html += '<span class="bdg ' + (wd.status === 'approved' ? 'bdgA' : wd.status === 'pending' ? 'bdgP' : 'bdgR') + '">' + (wd.status || 'pending') + '</span></div>';
+      if (wd.wallet) html += '<div style="font-size:0.7rem;color:var(--mu);margin-top:5px;word-break:break-all;">' + wd.wallet + '</div>';
+      html += '</div>';
+    }
+  }
+  sec.innerHTML = html;
+}
+function doWithdraw() {
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var wallet = (document.getElementById('wdWallet').value || '').trim();
+  var amt = parseFloat(document.getElementById('wdAmt').value) || 0;
+  var err = document.getElementById('wdErr');
+  err.textContent = '';
+  if (!wallet || wallet.length < 10) { err.textContent = 'Enter a valid BTC wallet address.'; return; }
+  if (amt < 100) { err.textContent = 'Minimum withdrawal is $100.'; return; }
+  var avail = (u.cash || 0) + (u.trade || 0);
+  if (amt > avail) { err.textContent = 'Insufficient balance.'; return; }
+  var wd = { id: String(Date.now()), email: u.email, name: u.name, wallet: wallet, amount: amt, status: 'pending', date: nowStr() };
+  allWDs.push(wd);
+  dbSaveWD(allWDs, null);
+  if (amt <= u.trade) { u.trade -= amt; } else { var rem = amt - u.trade; u.trade = 0; u.cash -= rem; }
+  u.txs.push({ type: 'withdraw', total: amt, date: nowStr() });
+  saveUser(u);
+  showToast('Withdrawal request submitted!');
+  renderWithdraw();
+}
+
+// ============================
+// NOTIFICATIONS
+// ============================
+function openNotifs() {
+  var u = getUser();
+  if (!u) return;
+  fixUser(u);
+  var html = '';
+  if (!u.notifs.length) {
+    html = '<p style="color:var(--mu);">No notifications yet.</p>';
+  } else {
+    var i, n;
+    for (i = u.notifs.length - 1; i >= 0; i--) {
+      n = u.notifs[i];
+      html += '<div style="padding:10px;border-bottom:1px solid var(--bdr);display:flex;gap:8px;">';
+      html += '<div style="width:7px;height:7px;border-radius:50%;background:' + (n.read ? 'var(--bdr)' : 'var(--yl)') + ';flex-shrink:0;margin-top:5px;"></div>';
+      html += '<div><div style="font-size:0.85rem;margin-bottom:3px;">' + (n.msg || '') + '</div><div style="font-size:0.7rem;color:var(--mu);">' + (n.date || '') + '</div></div></div>';
+    }
+    for (i = 0; i < u.notifs.length; i++) u.notifs[i].read = true;
+    saveUser(u);
+    refreshNotifBadge();
+  }
+  document.getElementById('notifBody').innerHTML = html;
+  openOv('ovNotifs');
+}
+function refreshNotifBadge() {
+  var u = getUser();
+  if (!u) return;
+  var unread = 0, i;
+  for (i = 0; i < (u.notifs || []).length; i++) { if (!u.notifs[i].read) unread++; }
+  var bdg = document.getElementById('notifBadge');
+  if (bdg) { bdg.style.display = unread > 0 ? 'flex' : 'none'; bdg.textContent = String(unread); }
+}
+
+// ============================
+// ADMIN
+// ============================
+function renderAdmin() {
+  var mainEl = document.getElementById('appMain');
+  if (!mainEl) return;
+  var studs = [], i;
+  for (i = 0; i < allUsers.length; i++) { if (allUsers[i].email !== ADMIN_EMAIL && !allUsers[i].isAdmin) studs.push(allUsers[i]); }
+  var totBal = 0;
+  for (i = 0; i < studs.length; i++) totBal += (studs[i].cash || 0) + (studs[i].trade || 0) + holdingsValue(studs[i]);
+  var pendWD = 0;
+  for (i = 0; i < allWDs.length; i++) { if (allWDs[i].status === 'pending') pendWD++; }
+
+  var html = '<div class="ptit">Admin Dashboard</div>';
+  html += '<div class="astats">';
+  html += '<div class="astat"><div class="asv">' + studs.length + '</div><div class="asl">Students</div></div>';
+  html += '<div class="astat"><div class="asv">' + fUSD(totBal) + '</div><div class="asl">Total Balances</div></div>';
+  html += '<div class="astat"><div class="asv">' + pendWD + '</div><div class="asl">Pending WDs</div></div>';
+  html += '</div>';
+  html += '<div class="atabs">';
+  html += '<button class="atab act" id="atab_s" onclick="switchAdminTab(\'s\')">Students</button>';
+  html += '<button class="atab" id="atab_w" onclick="switchAdminTab(\'w\')">Withdrawals</button>';
+  html += '</div>';
+  html += '<div id="admStudents">';
+  if (!studs.length) html += '<p style="color:var(--mu);">No students registered yet.</p>';
+  for (i = 0; i < studs.length; i++) html += buildStudCard(studs[i]);
+  html += '</div>';
+  html += '<div id="admWDs" style="display:none;">' + buildWDsHTML() + '</div>';
+  html += '<div style="margin-top:14px;"><button class="btn bGh bSm" onclick="refreshAdmin()">&#x21BB; Refresh</button></div>';
+  mainEl.innerHTML = html;
+}
+
+function switchAdminTab(t) {
+  document.getElementById('admStudents').style.display = t === 's' ? 'block' : 'none';
+  document.getElementById('admWDs').style.display = t === 'w' ? 'block' : 'none';
+  document.getElementById('atab_s').className = 'atab' + (t === 's' ? ' act' : '');
+  document.getElementById('atab_w').className = 'atab' + (t === 'w' ? ' act' : '');
+}
+
+function buildStudCard(u) {
+  var total = (u.cash || 0) + (u.trade || 0) + holdingsValue(u);
+  var fm = '';
+  try { fm = localStorage.getItem('tp_fm_' + u.email) || ''; } catch(e) {}
+  var html = '<div class="sc">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+  html += '<div><div style="font-weight:700;">' + (u.name || '') + '</div><div style="font-size:0.72rem;color:var(--mu);">' + (u.email || '') + '</div></div>';
+  html += '<span class="bdg ' + (u.kyc === 'approved' ? 'bdgA' : u.kyc === 'pending' ? 'bdgP' : 'bdgR') + '">' + (u.kyc || 'none') + '</span></div>';
+  html += '<div style="font-size:0.8rem;margin-bottom:8px;">Cash: <strong>' + fUSD(u.cash) + '</strong> &nbsp; Trade: <strong>' + fUSD(u.trade) + '</strong> &nbsp; Total: <strong>' + fUSD(total) + '</strong></div>';
+  html += '<div style="font-size:0.78rem;margin-bottom:8px;color:var(--mu);">Mode: <strong style="color:' + (fm === 'profit' ? 'var(--gn)' : fm === 'loss' ? 'var(--rd)' : 'var(--mu)') + ';">' + (fm || 'auto') + '</strong></div>';
+  html += '<div class="sca">';
+  html += '<button class="btn bGn bSm" onclick="admTopup(\'' + u.email + '\')">+ Top Up</button>';
+  html += '<button class="btn bGh bSm" onclick="admForce(\'' + u.email + '\',\'profit\')">Force Profit</button>';
+  html += '<button class="btn bGh bSm" onclick="admForce(\'' + u.email + '\',\'loss\')">Force Loss</button>';
+  html += '<button class="btn bGh bSm" onclick="admForce(\'' + u.email + '\',\'\')">Auto</button>';
+  if (u.kyc === 'pending') {
+    html += '<button class="btn bYl bSm" onclick="admApproveKYC(\'' + u.email + '\')">Approve KYC</button>';
+    html += '<button class="btn bGh bSm" onclick="admRejectKYC(\'' + u.email + '\')">Reject KYC</button>';
+  }
+  html += '<button class="btn bGh bSm" onclick="admNotify(\'' + u.email + '\')">Notify</button>';
+  html += '<button class="btn bRd bSm" onclick="admDelete(\'' + u.email + '\')">Delete</button>';
+  html += '</div></div>';
+  return html;
+}
+
+function buildWDsHTML() {
+  if (!allWDs.length) return '<p style="color:var(--mu);">No withdrawal requests yet.</p>';
+  var html = '', i, wd;
+  for (i = allWDs.length - 1; i >= 0; i--) {
+    wd = allWDs[i];
+    html += '<div class="wdc">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+    html += '<div><strong>' + (wd.name || '') + '</strong><div style="font-size:0.72rem;color:var(--mu);">' + (wd.email || '') + '</div></div>';
+    html += '<span class="bdg ' + (wd.status === 'approved' ? 'bdgA' : wd.status === 'pending' ? 'bdgP' : 'bdgR') + '">' + (wd.status || 'pending') + '</span></div>';
+    html += '<div style="font-size:0.85rem;margin-bottom:5px;">Amount: <strong>' + fUSD(wd.amount) + '</strong></div>';
+    if (wd.wallet) html += '<div style="font-size:0.7rem;color:var(--mu);word-break:break-all;margin-bottom:7px;">' + wd.wallet + '</div>';
+    html += '<div style="font-size:0.72rem;color:var(--mu);margin-bottom:8px;">' + (wd.date || '') + '</div>';
+    if (wd.status === 'pending') {
+      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+      html += '<button class="btn bGn bSm" onclick="admWDAction(' + i + ',\'approved\')">Approve</button>';
+      html += '<button class="btn bGh bSm" onclick="admWDFee(' + i + ')">Request Fee</button>';
+      html += '<button class="btn bRd bSm" onclick="admWDAction(' + i + ',\'rejected\')">Reject</button>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  return html;
+}
+
+function refreshAdmin() {
+  dbGetAllUsers(function(users) {
+    var i, j;
+    for (i = 0; i < users.length; i++) {
+      var f = false;
+      for (j = 0; j < allUsers.length; j++) { if (allUsers[j].email === users[i].email) { allUsers[j] = users[i]; f = true; break; } }
+      if (!f) allUsers.push(users[i]);
+    }
+    dbGetWDs(function(wds) { allWDs = wds || []; renderAdmin(); showToast('Refreshed!'); });
+  });
+}
+
+function admTopup(email) {
+  showModal('Top Up Student', 'Select amount to add:', [
+    { label: 'Cancel', cls: 'bGh', fn: function() { closeOv('ovModal'); } },
+    { label: '+$100', cls: 'bGn', fn: function() { doTopup(email, 100); closeOv('ovModal'); } },
+    { label: '+$500', cls: 'bGn', fn: function() { doTopup(email, 500); closeOv('ovModal'); } },
+    { label: '+$1000', cls: 'bYl', fn: function() { doTopup(email, 1000); closeOv('ovModal'); } }
+  ]);
+}
+function doTopup(email, amt) {
+  var i;
+  for (i = 0; i < allUsers.length; i++) {
+    if (allUsers[i].email === email) {
+      allUsers[i].trade = (allUsers[i].trade || 0) + amt;
+      if (!allUsers[i].txs) allUsers[i].txs = [];
+      allUsers[i].txs.push({ type: 'deposit', total: amt, date: nowStr() });
+      dbSaveUser(allUsers[i], null);
+      showToast('Added ' + fUSD(amt) + ' to ' + allUsers[i].name);
+      renderAdmin();
+      return;
+    }
+  }
+}
+function admForce(email, mode) {
+  try { localStorage.setItem('tp_fm_' + email, mode); } catch(e) {}
+  showToast('Set to ' + (mode || 'auto') + ' mode');
+  renderAdmin();
+}
+function admApproveKYC(email) {
+  var i;
+  for (i = 0; i < allUsers.length; i++) { if (allUsers[i].email === email) { allUsers[i].kyc = 'approved'; dbSaveUser(allUsers[i], null); showToast('KYC approved'); renderAdmin(); return; } }
+}
+function admRejectKYC(email) {
+  var i;
+  for (i = 0; i < allUsers.length; i++) { if (allUsers[i].email === email) { allUsers[i].kyc = 'rejected'; dbSaveUser(allUsers[i], null); showToast('KYC rejected'); renderAdmin(); return; } }
+}
+function admNotify(email) {
+  showModal('Send Notification', '<textarea class="inp" id="notifMsg" rows="3" placeholder="Message..."></textarea>', [
+
+```
+{ label: 'Cancel', cls: 'bGh', fn: function() { closeOv('ovModal'); } },
+{ label: 'Send', cls: 'bYl', fn: function() {
+  var msg = document.getElementById('notifMsg');
+  if (!msg || !msg.value.trim()) { closeOv('ovModal'); return; }
+  var i;
+  for (i = 0; i < allUsers.length; i++) {
+    if (allUsers[i].email === email) {
+      if (!allUsers[i].notifs) allUsers[i].notifs = [];
+      allUsers[i].notifs.push({ msg: msg.value.trim(), date: nowStr(), read: false });
+      dbSaveUser(allUsers[i], null);
+      showToast('Notification sent!');
+      break;
+    }
+  }
+  closeOv('ovModal');
+}}
+```
+
+]);
+}
+function admDelete(email) {
+showModal(‘Delete Student’, ‘Are you sure? This cannot be undone.’, [
+{ label: ‘Cancel’, cls: ‘bGh’, fn: function() { closeOv(‘ovModal’); } },
+{ label: ‘Delete’, cls: ‘bRd’, fn: function() {
+sbFetch(‘DELETE’, ‘users?email=eq.’ + encodeURIComponent(email), null, null);
+var nu = [], i;
+for (i = 0; i < allUsers.length; i++) { if (allUsers[i].email !== email) nu.push(allUsers[i]); }
+allUsers = nu;
+closeOv(‘ovModal’);
+showToast(‘Student deleted.’);
+renderAdmin();
+}}
+]);
+}
+function admWDAction(idx, status) {
+allWDs[idx].status = status;
+dbSaveWD(allWDs, null);
+showToast(’Withdrawal ’ + status);
+renderAdmin();
+switchAdminTab(‘w’);
+}
+function admWDFee(idx) {
+var wd = allWDs[idx], fee = wd.amount * 0.3;
+showModal(‘Request Processing Fee’, ‘Ask client to pay 30% fee of <strong>’ + fUSD(fee) + ‘</strong> before processing.’, [
+{ label: ‘OK’, cls: ‘bYl’, fn: function() { closeOv(‘ovModal’); } },
+{ label: ‘Close’, cls: ‘bGh’, fn: function() { closeOv(‘ovModal’); } }
+]);
+}
+
+// ============================
+// INIT
+// ============================
+window.onload = function() {
+renderTicker();
+renderLandMkt();
+
+if (session) {
+if (session.isAdmin) {
+launchApp(true);
+} else {
+dbGetUser(session.email, function(u) {
+if (u) {
+session = u;
+saveSess();
+var found = false, i;
+for (i = 0; i < allUsers.length; i++) { if (allUsers[i].email === u.email) { allUsers[i] = u; found = true; break; } }
+if (!found) allUsers.push(u);
+}
+launchApp(false);
+});
+}
+}
+};
+</script>
+
+</body>
+</html>
