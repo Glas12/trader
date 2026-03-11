@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradePro</title>
+<style>
+body{background:#0b0e11;color:#fff;font-family:sans-serif;margin:0;padding:20px;}
+.btn{background:#f0b90b;color:#000;border:none;border-radius:8px;padding:12px 24px;font-size:1rem;font-weight:700;cursor:pointer;display:inline-block;margin:5px;}
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);padding:20px;}
+.box{background:#141820;border-radius:12px;padding:20px;max-width:400px;margin:60px auto;}
+input{width:100%;background:#1e2430;border:1px solid #3a4560;border-radius:8px;color:#fff;padding:10px;font-size:1rem;margin-bottom:12px;display:block;box-sizing:border-box;}
+#msg{margin-top:15px;font-size:1rem;min-height:24px;}
+</style>
+</head>
+<body>
+
+<h2 style="color:#f0b90b;">TradePro</h2>
+<p style="color:#8a9ab0;">Welcome to TradePro</p>
+
+<button class="btn" onclick="openLogin()">Sign In</button>
+<button class="btn" style="background:transparent;color:#fff;border:1px solid #3a4560;" onclick="openRegister()">Get Started</button>
+
+<div id="ovLogin" class="overlay">
+  <div class="box">
+    <h3>Sign In</h3>
+    <input type="email" id="lEmail" placeholder="Email">
+    <input type="password" id="lPass" placeholder="Password">
+    <button class="btn" onclick="doLogin()">Sign In</button>
+    <button class="btn" style="background:#1e2430;color:#fff;" onclick="closeLogin()">Cancel</button>
+    <div id="msg" style="color:#f6465d;"></div>
+  </div>
+</div>
+
+<div id="ovRegister" class="overlay">
+  <div class="box">
+    <h3>Create Account</h3>
+    <input type="text" id="rName" placeholder="Full Name">
+    <input type="email" id="rEmail" placeholder="Email">
+    <input type="password" id="rPass" placeholder="Password">
+    <button class="btn" onclick="doRegister()">Create Account</button>
+    <button class="btn" style="background:#1e2430;color:#fff;" onclick="closeRegister()">Cancel</button>
+    <div id="rMsg" style="color:#f6465d;"></div>
+  </div>
+</div>
+
+<div id="dashboard" style="display:none;">
+  <h3 id="welcomeMsg" style="color:#0ecb81;"></h3>
+  <p style="color:#8a9ab0;">You are logged in!</p>
+  <button class="btn" onclick="doLogout()">Logout</button>
+</div>
+
+<script>
+var users = {};
+var loggedIn = null;
+
+try {
+  var saved = localStorage.getItem('tp_users');
+  if (saved) users = JSON.parse(saved);
+} catch(e) {}
+
+try {
+  var savedSess = localStorage.getItem('tp_sess');
+  if (savedSess) loggedIn = JSON.parse(savedSess);
+} catch(e) {}
+
+if (loggedIn) {
+  showDashboard();
+}
+
+function openLogin() {
+  document.getElementById('ovLogin').style.display = 'block';
+}
+function closeLogin() {
+  document.getElementById('ovLogin').style.display = 'none';
+}
+function openRegister() {
+  document.getElementById('ovRegister').style.display = 'block';
+}
+function closeRegister() {
+  document.getElementById('ovRegister').style.display = 'none';
+}
+
+function doLogin() {
+  var email = document.getElementById('lEmail').value.trim().toLowerCase();
+  var pass = document.getElementById('lPass').value.trim();
+  var msg = document.getElementById('msg');
+  msg.textContent = '';
+  if (!email || !pass) { msg.textContent = 'Enter email and password.'; return; }
+  if (!users[email]) { msg.textContent = 'Account not found.'; return; }
+  if (users[email].pass !== pass) { msg.textContent = 'Wrong password.'; return; }
+  loggedIn = users[email];
+  try { localStorage.setItem('tp_sess', JSON.stringify(loggedIn)); } catch(e) {}
+  closeLogin();
+  showDashboard();
+}
+
+function doRegister() {
+  var name = document.getElementById('rName').value.trim();
+  var email = document.getElementById('rEmail').value.trim().toLowerCase();
+  var pass = document.getElementById('rPass').value.trim();
+  var msg = document.getElementById('rMsg');
+  msg.textContent = '';
+  if (!name || !email || !pass) { msg.textContent = 'Fill in all fields.'; return; }
+  if (pass.length < 6) { msg.textContent = 'Password min 6 characters.'; return; }
+  if (users[email]) { msg.textContent = 'Email already registered.'; return; }
+  users[email] = { name: name, email: email, pass: pass, balance: 0 };
+  try { localStorage.setItem('tp_users', JSON.stringify(users)); } catch(e) {}
+  loggedIn = users[email];
+  try { localStorage.setItem('tp_sess', JSON.stringify(loggedIn)); } catch(e) {}
+  closeRegister();
+  showDashboard();
+}
+
+function showDashboard() {
+  document.getElementById('ovLogin').style.display = 'none';
+  document.getElementById('ovRegister').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('welcomeMsg').textContent = 'Welcome, ' + loggedIn.name + '!';
+}
+
+function doLogout() {
+  loggedIn = null;
+  try { localStorage.removeItem('tp_sess'); } catch(e) {}
+  document.getElementById('dashboard').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
