@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- TradePro v3.1 -->
+<title>TradePro</title>
+<style>
+*{box-sizing:border-box;}
+body{background:#0b0e11;color:#fff;font-family:sans-serif;margin:0;}
+.btn{background:#f0b90b;color:#000;border:none;border-radius:8px;padding:12px 24px;font-size:1rem;font-weight:700;cursor:pointer;margin:5px;}
+.btn2{background:#1e2430;color:#fff;border:1px solid #3a4560;}
+nav{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:#141820;border-bottom:1px solid #2a3040;}
+.logo{color:#f0b90b;font-weight:800;font-size:1.1rem;}
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);padding:20px;overflow-y:auto;z-index:100;}
+.box{background:#141820;border-radius:12px;padding:20px;max-width:400px;margin:40px auto;}
+input,select,textarea{width:100%;background:#1e2430;border:1px solid #3a4560;border-radius:8px;color:#fff;padding:10px;font-size:1rem;margin-bottom:12px;display:block;box-sizing:border-box;}
+textarea{resize:vertical;min-height:70px;}
+.err{color:#f6465d;font-size:0.85rem;margin-bottom:8px;min-height:18px;}
+#app{display:none;flex-direction:column;height:100vh;}
+.anav{background:#141820;padding:0 14px;height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #2a3040;flex-shrink:0;}
+.body{display:flex;flex:1;overflow:hidden;}
+.main{flex:1;overflow-y:auto;padding:18px;}
+.botnav{background:#141820;border-top:1px solid #2a3040;display:flex;flex-shrink:0;}
+.nb{flex:1;padding:8px 4px;text-align:center;font-size:0.65rem;color:#5a6a80;background:none;border:none;cursor:pointer;}
+.nb.on{color:#f0b90b;}
+.sec{display:none;}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#f0b90b;color:#000;padding:10px 20px;border-radius:20px;font-size:0.85rem;font-weight:700;display:none;z-index:9999;white-space:nowrap;max-width:90vw;text-align:center;}
+/* BELL */
+.bell-wrap{position:relative;cursor:pointer;}
+.bell-badge{position:absolute;top:-5px;right:-5px;background:#f6465d;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.58rem;display:flex;align-items:center;justify-content:center;font-weight:800;}
+/* NOTIF DROPDOWN */
+.notif-panel{position:fixed;top:52px;right:0;left:0;background:#141820;border-bottom:1px solid #2a3040;z-index:300;max-height:320px;overflow-y:auto;display:none;}
+.notif-item{padding:12px 16px;border-bottom:1px solid #2a3040;font-size:0.82rem;}
+.notif-item.unread{background:rgba(240,185,11,0.07);}
+/* AVATAR */
+.av{width:40px;height:40px;border-radius:50%;background:#f0b90b;color:#000;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;flex-shrink:0;}
+.av-sm{width:32px;height:32px;font-size:0.85rem;}
+/* STUDENT CARD */
+.stud-card{background:#1a1f2e;border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid #2a3040;}
+.force-row{display:flex;gap:6px;margin-top:8px;}
+.force-btn{flex:1;padding:7px 4px;border-radius:7px;border:2px solid transparent;font-size:0.72rem;font-weight:800;cursor:pointer;text-align:center;}
+.force-profit{background:rgba(14,203,129,0.12);color:#0ecb81;border-color:#0ecb81;}
+.force-profit.active{background:#0ecb81;color:#000;}
+.force-loss{background:rgba(246,70,93,0.12);color:#f6465d;border-color:#f6465d;}
+.force-loss.active{background:#f6465d;color:#fff;}
+.force-auto{background:rgba(240,185,11,0.1);color:#f0b90b;border-color:#f0b90b;}
+.force-auto.active{background:#f0b90b;color:#000;}
+/* ACTION LOG */
+.act-log{background:#0ecb8115;border:1px solid #0ecb8130;border-radius:8px;padding:10px 14px;margin-top:6px;font-size:0.8rem;color:#0ecb81;}
+/* STUDENT PROFILE PAGE */
+.sp-back{display:flex;align-items:center;gap:8px;color:#8a9ab0;font-size:0.85rem;cursor:pointer;margin-bottom:16px;}
+.sp-back span{color:#f0b90b;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.stat-box{background:#1a1f2e;border-radius:10px;padding:14px;border:1px solid #2a3040;}
+.stat-lbl{font-size:0.68rem;color:#5a6a80;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px;}
+.stat-val{font-size:1.2rem;font-weight:800;color:#f0b90b;}
+.stat-sub{font-size:0.72rem;color:#8a9ab0;margin-top:3px;}
+.eng-box{background:#1a1f2e;border-radius:10px;padding:14px;border:1px solid #2a3040;margin-bottom:12px;}
+.eng-title{font-size:0.72rem;color:#5a6a80;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #1e2430;font-size:0.83rem;}
+.info-row:last-child{border-bottom:none;}
+.info-lbl{color:#5a6a80;}
+.info-val{color:#fff;font-weight:600;text-align:right;word-break:break-all;max-width:60%;}
+/* SIGNAL */
+.sig-box{background:#1a1f2e;border-radius:10px;padding:14px;border:1px solid #2a3040;margin-bottom:14px;}
+.sig-item{background:#141820;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+/* SECTION LABELS */
+.sec-lbl{font-size:0.7rem;color:#5a6a80;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;margin-top:16px;}
+/* TX ITEM */
+.tx-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #1e2430;}
+.tx-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0;}
+/* TICKER */
+@keyframes tk{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+/* WD STATUS */
+.wd-badge{padding:3px 10px;border-radius:10px;font-size:0.72rem;font-weight:700;}
+.wd-pending{background:rgba(240,185,11,0.15);color:#f0b90b;}
+.wd-approved{background:rgba(14,203,129,0.15);color:#0ecb81;}
+.wd-rejected{background:rgba(246,70,93,0.15);color:#f6465d;}
+/* MODAL */
+.modal-wrap{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:500;padding:20px;overflow-y:auto;}
+.modal-box{background:#141820;border-radius:14px;padding:20px;max-width:380px;margin:60px auto;}
+/* KYC BADGE */
+.kyc-unverified{color:#5a6a80;}
+.kyc-pending{color:#f0b90b;}
+.kyc-approved{color:#0ecb81;}
+/* TABS */
+.tab-row{display:flex;gap:6px;margin-bottom:14px;}
+.tab-btn{padding:7px 16px;border-radius:18px;border:1px solid #2a3040;background:#1e2430;color:#8a9ab0;font-weight:700;cursor:pointer;font-size:0.82rem;}
+.tab-btn.on{background:#f0b90b;color:#000;border-color:#f0b90b;}
+/* GRID 2 INPUTS */
+.inp2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.inp2 input{margin-bottom:0;}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- NOTIF PANEL (student) -->
+
+<div id="notifPanel" class="notif-panel"></div>
+
+<!-- LAND PAGE -->
+
+<div id="land">
+  <nav>
+    <div class="logo">TradePro</div>
+    <div>
+      <button class="btn btn2" onclick="show('ovLogin')">Sign In</button>
+      <button class="btn" onclick="show('ovReg')">Get Started</button>
+    </div>
+  </nav>
+  <div style="background:#141820;border-bottom:1px solid #2a3040;overflow:hidden;height:36px;display:flex;align-items:center;">
+    <div id="ticker" style="display:flex;gap:28px;white-space:nowrap;padding:0 16px;animation:tk 30s linear infinite;"></div>
+  </div>
+  <div style="text-align:center;padding:60px 20px;">
+    <h1 style="color:#f0b90b;font-size:2rem;">Trade Crypto Like a Pro</h1>
+    <p style="color:#8a9ab0;margin:16px 0 24px;">Access real-time markets and grow your wealth.</p>
+    <button class="btn" onclick="show('ovReg')">Create Free Account</button>
+    <button class="btn btn2" onclick="show('ovLogin')">Sign In</button>
+  </div>
+  <div style="padding:20px;">
+    <h2 style="margin-bottom:14px;font-size:1.1rem;">Live Markets</h2>
+    <table style="width:100%;border-collapse:collapse;">
+      <thead><tr>
+        <th style="text-align:left;padding:7px 8px;font-size:0.72rem;color:#5a6a80;border-bottom:1px solid #2a3040;">Asset</th>
+        <th style="text-align:left;padding:7px 8px;font-size:0.72rem;color:#5a6a80;border-bottom:1px solid #2a3040;">Price</th>
+        <th style="text-align:left;padding:7px 8px;font-size:0.72rem;color:#5a6a80;border-bottom:1px solid #2a3040;">24h</th>
+        <th style="padding:7px 8px;border-bottom:1px solid #2a3040;"></th>
+      </tr></thead>
+      <tbody id="landMktBody"></tbody>
+    </table>
+  </div>
+  <div style="text-align:center;padding:20px;color:#5a6a80;font-size:0.8rem;">
+    <span style="cursor:pointer;text-decoration:underline;" onclick="show('ovTerms')">Terms and Conditions</span>
+  </div>
+</div>
+
+<!-- LOGIN -->
+
+<div class="overlay" id="ovLogin">
+  <div class="box">
+    <h3 style="margin-bottom:16px;">Sign In</h3>
+    <input type="email" id="lEmail" placeholder="Email">
+    <input type="password" id="lPass" placeholder="Password">
+    <div class="err" id="lErr"></div>
+    <button class="btn" style="width:100%;" onclick="doLogin()">Sign In</button>
+    <p style="text-align:center;margin-top:12px;font-size:0.85rem;color:#8a9ab0;">No account? <span style="color:#f0b90b;cursor:pointer;" onclick="hide('ovLogin');show('ovReg')">Register</span></p>
+    <div id="stuArea">
+      <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:#5a6a80;">Admin? <span style="color:#f0b90b;cursor:pointer;" onclick="showAdm()">Click here</span></p>
+    </div>
+    <div id="admArea" style="display:none;">
+      <hr style="border-color:#2a3040;margin:14px 0;">
+      <input type="password" id="aPass" placeholder="Admin password">
+      <div class="err" id="aErr"></div>
+      <button class="btn" style="width:100%;" onclick="doAdminLogin()">Admin Login</button>
+    </div>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="hide('ovLogin')">Cancel</button>
+  </div>
+</div>
+
+<!-- REGISTER -->
+
+<div class="overlay" id="ovReg">
+  <div class="box">
+    <h3 style="margin-bottom:16px;">Create Account</h3>
+    <input type="text" id="rName" placeholder="Full Name">
+    <input type="email" id="rEmail" placeholder="Email">
+    <input type="password" id="rPass" placeholder="Password (min 6)">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <input type="checkbox" id="rTerms" style="width:auto;margin:0;">
+      <label for="rTerms" style="font-size:0.82rem;color:#8a9ab0;">I agree to <span style="color:#f0b90b;cursor:pointer;" onclick="show('ovTerms')">Terms and Conditions</span> (30% withdrawal fee)</label>
+    </div>
+    <div class="err" id="rErr"></div>
+    <button class="btn" style="width:100%;" onclick="doRegister()">Create Account</button>
+    <p style="text-align:center;margin-top:12px;font-size:0.85rem;color:#8a9ab0;">Have account? <span style="color:#f0b90b;cursor:pointer;" onclick="hide('ovReg');show('ovLogin')">Sign In</span></p>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="hide('ovReg')">Cancel</button>
+  </div>
+</div>
+
+<!-- TERMS -->
+
+<div class="overlay" id="ovTerms">
+  <div class="box">
+    <h3 style="margin-bottom:16px;color:#f0b90b;">Terms and Conditions</h3>
+    <p style="color:#8a9ab0;line-height:1.7;font-size:0.85rem;margin-bottom:10px;"><strong style="color:#fff;">1. Platform.</strong> TradePro is a crypto trading platform.</p>
+    <p style="color:#8a9ab0;line-height:1.7;font-size:0.85rem;margin-bottom:10px;"><strong style="color:#fff;">2. Withdrawals.</strong> All withdrawals in Bitcoin. <strong style="color:#f6465d;">30% processing fee</strong> applies.</p>
+    <p style="color:#8a9ab0;line-height:1.7;font-size:0.85rem;margin-bottom:10px;"><strong style="color:#fff;">3. Risk.</strong> Crypto trading involves significant risk.</p>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="hide('ovTerms')">Close</button>
+  </div>
+</div>
+
+<!-- TOP-UP MODAL -->
+
+<div class="modal-wrap" id="modalTopup">
+  <div class="modal-box">
+    <h3 style="margin-bottom:6px;">Fund Account</h3>
+    <div id="topupMeta" style="font-size:0.82rem;color:#8a9ab0;margin-bottom:14px;"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="btn" style="padding:7px 14px;font-size:0.82rem;" onclick="setTopupAmt(100)">$100</button>
+      <button class="btn" style="padding:7px 14px;font-size:0.82rem;" onclick="setTopupAmt(500)">$500</button>
+      <button class="btn" style="padding:7px 14px;font-size:0.82rem;" onclick="setTopupAmt(1000)">$1,000</button>
+      <button class="btn" style="padding:7px 14px;font-size:0.82rem;" onclick="setTopupAmt(5000)">$5,000</button>
+    </div>
+    <label style="font-size:0.82rem;color:#8a9ab0;display:block;margin-bottom:6px;">Amount (USD)</label>
+    <input type="number" id="topupAmt" placeholder="Enter amount" style="margin-bottom:14px;border:2px solid #f0b90b;">
+    <label style="font-size:0.82rem;color:#8a9ab0;display:block;margin-bottom:8px;">Fund into</label>
+    <div style="display:flex;gap:20px;margin-bottom:14px;">
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.9rem;">
+        <input type="radio" name="topupDest" id="topupDestMain" value="cash" checked style="width:auto;margin:0;accent-color:#f0b90b;width:16px;height:16px;">
+        Main Account
+      </label>
+      <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:0.9rem;">
+        <input type="radio" name="topupDest" id="topupDestTrade" value="trade" style="width:auto;margin:0;accent-color:#f0b90b;width:16px;height:16px;">
+        Trading Account
+      </label>
+    </div>
+    <div class="err" id="topupErr"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn2" style="flex:1;margin:0;" onclick="closeModal('modalTopup')">Cancel</button>
+      <button class="btn" style="flex:1;margin:0;" onclick="execTopup()">Fund Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- REMOVE MODAL -->
+
+<div class="modal-wrap" id="modalRemove">
+  <div class="modal-box">
+    <h3 style="margin-bottom:14px;">Remove Funds</h3>
+    <p style="color:#8a9ab0;font-size:0.85rem;margin-bottom:12px;">From: <strong id="removeName" style="color:#fff;"></strong></p>
+    <input type="number" id="removeAmt" placeholder="Amount to remove ($)">
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.82rem;color:#8a9ab0;display:block;margin-bottom:6px;">Remove from:</label>
+      <select id="removeSrc">
+        <option value="trade">Trading Account</option>
+        <option value="cash">Main Account</option>
+      </select>
+    </div>
+    <div class="err" id="removeErr"></div>
+    <button class="btn" style="width:100%;background:#f6465d;" onclick="execRemove()">Remove Funds</button>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="closeModal('modalRemove')">Cancel</button>
+  </div>
+</div>
+
+<!-- RESET PW MODAL -->
+
+<div class="modal-wrap" id="modalResetPW">
+  <div class="modal-box">
+    <h3 style="margin-bottom:14px;">Reset Password</h3>
+    <p style="color:#8a9ab0;font-size:0.85rem;margin-bottom:12px;">For: <strong id="resetPWName" style="color:#fff;"></strong></p>
+    <input type="text" id="newPWVal" placeholder="New password">
+    <div class="err" id="resetPWErr"></div>
+    <button class="btn" style="width:100%;" onclick="execResetPW()">Set New Password</button>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="closeModal('modalResetPW')">Cancel</button>
+  </div>
+</div>
+
+<!-- CHANGE ADMIN PW MODAL -->
+
+<div class="modal-wrap" id="modalAdminPW">
+  <div class="modal-box">
+    <h3 style="margin-bottom:14px;">Change Admin Password</h3>
+    <input type="password" id="curAdmPW" placeholder="Current password">
+    <input type="password" id="newAdmPW" placeholder="New password">
+    <div class="err" id="admPWErr"></div>
+    <button class="btn" style="width:100%;" onclick="execAdminPW()">Change Password</button>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="closeModal('modalAdminPW')">Cancel</button>
+  </div>
+</div>
+
+<!-- NOTIFY MODAL -->
+
+<div class="modal-wrap" id="modalNotify">
+  <div class="modal-box">
+    <h3 style="margin-bottom:14px;">Send Notification</h3>
+    <p style="color:#8a9ab0;font-size:0.85rem;margin-bottom:12px;">To: <strong id="notifyName" style="color:#fff;"></strong></p>
+    <textarea id="notifyMsg" placeholder="Message to student..."></textarea>
+    <div class="err" id="notifyErr"></div>
+    <button class="btn" style="width:100%;" onclick="execNotify()">Send</button>
+    <button class="btn btn2" style="width:100%;margin-top:8px;" onclick="closeModal('modalNotify')">Cancel</button>
+  </div>
+</div>
+
+<!-- APP -->
+
+<div id="app">
+  <div class="anav">
+    <div style="color:#f0b90b;font-weight:800;font-size:1rem;">TradePro</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="font-size:0.78rem;color:#8a9ab0;">Bal: <b id="appBal" style="color:#f0b90b;">$0</b></span>
+      <!-- Bell icon for students -->
+      <div class="bell-wrap" id="bellWrap" style="display:none;" onclick="toggleNotifPanel()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8a9ab0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <div class="bell-badge" id="bellBadge" style="display:none;">0</div>
+      </div>
+      <button onclick="doLogout()" style="background:#f0b90b;color:#000;border:none;border-radius:50%;width:30px;height:30px;font-weight:800;cursor:pointer;font-size:0.9rem;" id="appAv">U</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="main" id="appMain">
+      <div class="sec" id="sec_portfolio"></div>
+      <div class="sec" id="sec_trading"></div>
+      <div class="sec" id="sec_market"></div>
+      <div class="sec" id="sec_history"></div>
+      <div class="sec" id="sec_profile"></div>
+      <div class="sec" id="sec_withdraw"></div>
+      <div class="sec" id="sec_admin"></div>
+    </div>
+  </div>
+  <div class="botnav" id="botnav"></div>
+</div>
+
+<!-- SCRIPT 1: Core globals, storage, auth, nav -->
+
+<!-- Script 1: Core: globals, storage, auth, nav -->
+
+<!-- Script 2: Student: market data, portfolio, market, trade -->
+
+<!-- Script 3: Student: history, profile, KYC, withdraw -->
+
+<!-- Script 4: Admin panel -->
+
+<!-- Script 5: Trading engine -->
+
+<!-- Script 6: Init -->
+
+<script>
+
+/* ---- SAFE HELPERS ---- */
+function gel(id) { return document.getElementById(id); }
+function gval(id) { var e = gel(id); return e ? e.value : ''; }
+function gcheck(id) { var e = gel(id); return e ? e.checked : false; }
+function shtml(id, h) { var e = gel(id); if (e) e.innerHTML = h; }
+function stext(id, t) { var e = gel(id); if (e) e.textContent = t; }
+function sdisp(id, d) { var e = gel(id); if (e) e.style.display = d; }
+function serr(id, t) { var e = gel(id); if (e) e.textContent = t; }
+
+var ADMIN_PASS_KEY = 'tp_adm_pw';
+var session = null;
+var toastTimer = null;
+var _modalEmail = '';
+var _notifOpen = false;
+
+function getAdminPass() { return load(ADMIN_PASS_KEY) || 'admin123'; }
+
+try { session = JSON.parse(localStorage.getItem('tp_sess') || 'null'); } catch(e) { session = null; }
+
+function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+function load(key) { try { var r = localStorage.getItem(key); return r ? JSON.parse(r) : null; } catch(e) { return null; } }
+
+function saveUser(u) {
+  save('tp_u_' + u.email, u);
+  var all = load('tp_all') || [];
+  var found = false;
+  for (var i = 0; i < all.length; i++) { if (all[i].email === u.email) { all[i] = u; found = true; break; } }
+  if (!found) all.push(u);
+  save('tp_all', all);
+}
+function loadUser(email) { return load('tp_u_' + email); }
+function loadAll() { return load('tp_all') || []; }
+function loadWDs() { return load('tp_wds') || []; }
+function saveWDs(arr) { save('tp_wds', arr); }
+function loadSignals() { return load('tp_signals') || []; }
+function saveSignals(arr) { save('tp_signals', arr); }
+function loadActLog() { return load('tp_actlog') || []; }
+function saveActLog(arr) { save('tp_actlog', arr); }
+function addActLog(msg) {
+  var log = loadActLog();
+  log.unshift({ msg: msg, date: new Date().toLocaleString() });
+  if (log.length > 50) log = log.slice(0, 50);
+  saveActLog(log);
+}
+
+function show(id) { sdisp(id, 'block'); }
+function hide(id) { sdisp(id, 'none'); }
+function showAdm() { sdisp('admArea','block'); sdisp('stuArea','none'); }
+function openModal(id) { sdisp(id,'block'); }
+function closeModal(id) { sdisp(id,'none'); }
+
+function toast(msg, color) {
+  var t = gel('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.background = color || '#f0b90b';
+  t.style.color = (color === '#f6465d' || color === '#e53935') ? '#fff' : '#000';
+  t.style.display = 'block';
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { t.style.display = 'none'; }, 2500);
+}
+
+/* ---- AUTH ---- */
+function doLogin() {
+  var email = gval('lEmail').trim().toLowerCase();
+  var pass = gval('lPass').trim();
+  serr('lErr', '');
+  if (!email || !pass) { serr('lErr','Enter email and password.'); return; }
+  var u = loadUser(email);
+  if (!u) { serr('lErr','Account not found.'); return; }
+  if (u.pass !== pass) { serr('lErr','Wrong password.'); return; }
+  session = u;
+  save('tp_sess', session);
+  hide('ovLogin');
+  launchApp(false);
+  toast('Welcome back ' + u.name + '!');
+}
+
+function doAdminLogin() {
+  var pass = gval('aPass').trim();
+  serr('aErr','');
+  if (pass !== getAdminPass()) { serr('aErr','Wrong password.'); return; }
+  session = { name: 'Admin', email: 'admin@tp.com', isAdmin: true };
+  save('tp_sess', session);
+  hide('ovLogin');
+  launchApp(true);
+  toast('Welcome Admin!');
+}
+
+function doRegister() {
+  var name = gval('rName').trim();
+  var email = gval('rEmail').trim().toLowerCase();
+  var pass = gval('rPass').trim();
+  var terms = gcheck('rTerms');
+  serr('rErr','');
+  if (!name || !email || !pass) { serr('rErr','Fill all fields.'); return; }
+  if (pass.length < 6) { serr('rErr','Password min 6 characters.'); return; }
+  if (!terms) { serr('rErr','Accept the Terms and Conditions.'); return; }
+  if (loadUser(email)) { serr('rErr','Email already registered.'); return; }
+  var u = {
+    name: name, email: email, pass: pass,
+    cash: 0, trade: 0, holdings: {}, txs: [], notifs: [],
+    kyc: 'unverified', phone: '', country: '', dob: '',
+    joined: new Date().toLocaleDateString()
+  };
+  saveUser(u);
+  session = u;
+  save('tp_sess', session);
+  hide('ovReg');
+  launchApp(false);
+  toast('Welcome ' + name + '!');
+}
+
+function doLogout() {
+  session = null;
+  try { localStorage.removeItem('tp_sess'); } catch(e) {}
+  sdisp('app','none');
+  sdisp('land','block');
+}
+
+/* ---- NAV ---- */
+var NAV_STU = [
+  { id: 'portfolio', label: 'Portfolio', icon: '◈' },
+  { id: 'trading',   label: 'Trading',   icon: '📈' },
+  { id: 'market',    label: 'Market',    icon: '▦' },
+  { id: 'history',   label: 'History',   icon: '◷' },
+  { id: 'profile',   label: 'More',      icon: '◉' }
+];
+var NAV_ADM = [
+  { id: 'admin', label: 'Dashboard', icon: '⬡' }
+];
+
+function launchApp(isAdmin) {
+  hide('land');
+  sdisp('app','flex');
+  var av = gel('appAv');
+  if (av && session) av.textContent = session.name.charAt(0).toUpperCase();
+  var nav = isAdmin ? NAV_ADM : NAV_STU;
+  var bn = gel('botnav');
+  if (bn) {
+    bn.innerHTML = '';
+    for (var i = 0; i < nav.length; i++) {
+      (function(item) {
+        var b = document.createElement('button');
+        b.className = 'nb';
+        b.id = 'nb_' + item.id;
+        b.innerHTML = '<span style="font-size:1rem;">' + item.icon + '</span><br>' + item.label;
+        b.onclick = function() { goSec(item.id); };
+        bn.appendChild(b);
+      })(nav[i]);
+    }
+  }
+  var balWrap = gel('appBal');
+  var balParent = balWrap ? balWrap.parentNode : null;
+  if (isAdmin) {
+    sdisp('botnav','none');
+    sdisp('bellWrap','none');
+    if (balParent) balParent.style.display = 'none';
+    goSec('admin');
+  } else {
+    sdisp('botnav','flex');
+    sdisp('bellWrap','flex');
+    if (balParent) balParent.style.display = 'flex';
+    updBal();
+    updBell();
+    goSec('portfolio');
+  }
+}
+
+var SECS = ['portfolio','trading','market','history','profile','withdraw','admin'];
+function goSec(id) {
+  if (_notifOpen) { _notifOpen = false; sdisp('notifPanel','none'); }
+  for (var i = 0; i < SECS.length; i++) {
+    sdisp('sec_' + SECS[i], 'none');
+    var nb = gel('nb_' + SECS[i]);
+    if (nb) nb.className = 'nb';
+  }
+  sdisp('sec_' + id, 'block');
+  var nb2 = gel('nb_' + id);
+  if (nb2) nb2.className = 'nb on';
+  if (id === 'portfolio') buildPortfolio();
+  else if (id === 'trading') buildTrading();
+  else if (id === 'market') buildMarket();
+  else if (id === 'history') buildHistory();
+  else if (id === 'profile') buildProfile();
+  else if (id === 'withdraw') buildWithdraw();
+  else if (id === 'admin') buildAdmin();
+  updBal();
+}
+
+function updBal() {
+  if (!session || session.isAdmin) return;
+  var u = loadUser(session.email);
+  if (!u) return;
+  var hv = holdVal(u);
+  stext('appBal', '$' + ((u.cash || 0) + (u.trade || 0) + hv).toFixed(2));
+}
+
+function updBell() {
+  if (!session || session.isAdmin) return;
+  var u = loadUser(session.email);
+  if (!u || !u.notifs) return;
+  var unread = 0;
+  for (var i = 0; i < u.notifs.length; i++) { if (!u.notifs[i].read) unread++; }
+  var badge = gel('bellBadge');
+  if (!badge) return;
+  if (unread > 0) { badge.style.display = 'flex'; badge.textContent = unread > 9 ? '9+' : String(unread); }
+  else { badge.style.display = 'none'; }
+}
+
+function toggleNotifPanel() {
+  var panel = document.getElementById('notifPanel');
+  _notifOpen = !_notifOpen;
+  if (_notifOpen) {
+    buildNotifPanel();
+    panel.style.display = 'block';
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+function buildNotifPanel() {
+  var u = loadUser(session.email);
+  if (!u || !u.notifs) return;
+  var html = '';
+  if (!u.notifs.length) {
+    html = '<div style="padding:14px;color:#5a6a80;font-size:0.82rem;text-align:center;">No notifications</div>';
+  } else {
+    for (var i = u.notifs.length - 1; i >= 0; i--) {
+      var n = u.notifs[i];
+      html += '<div class="notif-item ' + (n.read ? '' : 'unread') + '">';
+      html += '<div style="color:#fff;margin-bottom:3px;">' + n.msg + '</div>';
+      html += '<div style="color:#5a6a80;font-size:0.7rem;">' + (n.date || '') + '</div>';
+      html += '</div>';
+    }
+  }
+  // Mark all read
+  for (var j = 0; j < u.notifs.length; j++) { u.notifs[j].read = true; }
+  saveUser(u);
+  session = u; save('tp_sess', session);
+  document.getElementById('notifPanel').innerHTML = html;
+  updBell();
+}
+
+
+/* ---- MARKET DATA ---- */
+var COINS = ['BTC','ETH','SOL','BNB','XRP','ADA'];
+var CNAME = { BTC:'Bitcoin', ETH:'Ethereum', SOL:'Solana', BNB:'BNB', XRP:'XRP', ADA:'Cardano' };
+var PX = { BTC:67240, ETH:3510, SOL:162, BNB:580, XRP:0.58, ADA:0.44 };
+var HIST = { BTC:[], ETH:[], SOL:[], BNB:[], XRP:[], ADA:[] };
+var _ci;
+for (_ci = 0; _ci < COINS.length; _ci++) {
+  var _c = COINS[_ci];
+  for (var _j = 0; _j < 20; _j++) { HIST[_c].push(PX[_c] * (0.97 + Math.random() * 0.06)); }
+}
+var CHG = { BTC:2.1, ETH:1.4, SOL:-0.8, BNB:0.6, XRP:-1.2, ADA:0.9 };
+
+setInterval(function() {
+  for (var i = 0; i < COINS.length; i++) {
+    var c = COINS[i];
+    PX[c] = Math.max(PX[c] * (1 + (Math.random() - 0.488) * 0.004), 0.001);
+    CHG[c] += (Math.random() - 0.5) * 0.1;
+    HIST[c].push(PX[c]);
+    if (HIST[c].length > 30) HIST[c].shift();
+  }
+}, 3000);
+
+function fUSD(n) {
+  var v = parseFloat(n) || 0;
+  if (v >= 1) return '$' + v.toFixed(2);
+  return '$' + v.toFixed(4);
+}
+
+function holdVal(u) {
+  var v = 0, k;
+  if (!u.holdings) return 0;
+  for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].amt) v += u.holdings[k].amt * (PX[k] || 0); }
+  return v;
+}
+
+/* ---- PORTFOLIO ---- */
+function buildPortfolio() {
+  var u = loadUser(session.email);
+  if (!u) return;
+  if (!u.holdings) u.holdings = {};
+  var hv = holdVal(u);
+  var hc = 0, k;
+  for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].cost) hc += u.holdings[k].cost; }
+  var pnl = hv - hc;
+  var pct = hc > 0 ? (pnl / hc * 100) : 0;
+  var total = (u.cash || 0) + (u.trade || 0) + hv;
+  var html = '<h2 style="margin-bottom:16px;">Portfolio</h2>';
+  html += '<div style="background:#141820;border-radius:10px;padding:20px;text-align:center;margin-bottom:14px;">';
+  html += '<div style="font-size:0.8rem;color:#8a9ab0;margin-bottom:6px;">Total Portfolio Value</div>';
+  html += '<div style="font-size:2rem;font-weight:800;color:#f0b90b;">' + fUSD(total) + '</div>';
+  html += '<div style="font-size:0.85rem;margin-top:6px;color:' + (pnl >= 0 ? '#0ecb81' : '#f6465d') + ';">P&L: ' + (pnl >= 0 ? '+' : '') + fUSD(pnl) + ' (' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%)</div>';
+  html += '</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">';
+  html += '<div style="background:#141820;border-radius:8px;padding:14px;"><div style="font-size:0.68rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Main Account</div><div style="font-weight:800;color:#f0b90b;font-size:1.1rem;">' + fUSD(u.cash) + '</div><div style="font-size:0.72rem;color:#5a6a80;margin-top:3px;">Ready to trade</div></div>';
+  html += '<div style="background:#141820;border-radius:8px;padding:14px;"><div style="font-size:0.68rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Trading Account</div><div style="font-weight:800;color:#0ecb81;font-size:1.1rem;">' + fUSD(u.trade) + '</div><div style="font-size:0.72rem;color:#5a6a80;margin-top:3px;">Active trading</div></div>';
+  html += '<div style="background:#141820;border-radius:8px;padding:14px;"><div style="font-size:0.68rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Unrealized P+L</div><div style="font-weight:800;font-size:1rem;color:' + (pnl >= 0 ? '#0ecb81' : '#f6465d') + ';">' + (pnl >= 0 ? '+' : '') + fUSD(pnl) + '</div><div style="font-size:0.72rem;color:' + (pnl >= 0 ? '#0ecb81' : '#f6465d') + ';margin-top:3px;">' + (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%</div></div>';
+  html += '<div style="background:#141820;border-radius:8px;padding:14px;"><div style="font-size:0.68rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Total Trades</div><div style="font-weight:800;font-size:1.2rem;color:#fff;">' + (u.txs ? u.txs.length : 0) + '</div><div style="font-size:0.72rem;color:#5a6a80;margin-top:3px;">Executed</div></div>';
+  html += '</div>';
+  var hasH = false;
+  for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].amt > 0) { hasH = true; break; } }
+  if (hasH) {
+    html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:14px;">';
+    html += '<div style="font-size:0.72rem;color:#5a6a80;margin-bottom:10px;">MY HOLDINGS</div>';
+    html += '<table style="width:100%;border-collapse:collapse;"><thead><tr>';
+    html += '<th style="text-align:left;padding:6px 8px;font-size:0.7rem;color:#5a6a80;border-bottom:1px solid #2a3040;">Asset</th>';
+    html += '<th style="text-align:left;padding:6px 8px;font-size:0.7rem;color:#5a6a80;border-bottom:1px solid #2a3040;">Value</th>';
+    html += '<th style="text-align:left;padding:6px 8px;font-size:0.7rem;color:#5a6a80;border-bottom:1px solid #2a3040;">P&L</th>';
+    html += '</tr></thead><tbody>';
+    for (k in u.holdings) {
+      var h = u.holdings[k];
+      if (!h || !h.amt) continue;
+      var val = h.amt * (PX[k] || 0);
+      var hp = val - (h.cost || 0);
+      html += '<tr><td style="padding:8px;border-bottom:1px solid #2a3040;font-weight:700;">' + k + '</td>';
+      html += '<td style="padding:8px;border-bottom:1px solid #2a3040;">' + fUSD(val) + '</td>';
+      html += '<td style="padding:8px;border-bottom:1px solid #2a3040;color:' + (hp >= 0 ? '#0ecb81' : '#f6465d') + ';">' + (hp >= 0 ? '+' : '') + fUSD(hp) + '</td></tr>';
+    }
+    html += '</tbody></table>';
+    html += '<button onclick="sellAll()" style="background:#f6465d;color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:0.82rem;font-weight:700;cursor:pointer;margin-top:10px;">Sell All</button>';
+    html += '</div>';
+  }
+
+  // Check for signals
+  var sigs = loadSignals();
+  if (sigs.length) {
+    html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:14px;">';
+    html += '<div style="font-size:0.72rem;color:#5a6a80;margin-bottom:10px;">LIVE TRADE SIGNALS</div>';
+    for (var si = sigs.length - 1; si >= Math.max(0, sigs.length - 3); si--) {
+      var sg = sigs[si];
+      html += '<div style="background:#1a1f2e;border-radius:8px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><span style="color:' + (sg.action === 'BUY' ? '#0ecb81' : '#f6465d') + ';font-weight:800;">' + sg.action + '</span> <strong>' + sg.coin + '</strong></div>';
+      html += '<div style="font-size:0.78rem;color:#8a9ab0;">' + fUSD(sg.price) + ' &times; ' + sg.qty + '</div>';
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+
+  html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+  html += '<button class="btn" style="width:100%;padding:13px;" onclick="goSec(\'market\')">Buy Crypto</button>';
+  html += '<button class="btn btn2" style="width:100%;padding:12px;" onclick="goSec(\'trading\')">Auto-Trading</button>';
+  html += '<button class="btn btn2" style="width:100%;padding:12px;" onclick="goSec(\'withdraw\')">Withdraw</button>';
+  html += '</div>';
+  document.getElementById('sec_portfolio').innerHTML = html;
+}
+
+function sellAll() {
+  var u = loadUser(session.email);
+  if (!u || !u.holdings) return;
+  var total = 0, k;
+  for (k in u.holdings) {
+    var h = u.holdings[k];
+    if (!h || !h.amt) continue;
+    var val = h.amt * (PX[k] || 0);
+    total += val;
+    u.txs.push({ type: 'sell', coin: k, amt: h.amt, px: PX[k], total: val, date: new Date().toLocaleDateString() });
+    u.holdings[k] = { amt: 0, cost: 0 };
+  }
+  u.trade = (u.trade || 0) + total;
+  saveUser(u); session = u; save('tp_sess', session);
+  toast('Sold all for ' + fUSD(total));
+  buildPortfolio(); updBal();
+}
+
+/* ---- MARKET ---- */
+function buildMarket() {
+  var html = '<h2 style="margin-bottom:16px;">Live Markets</h2>';
+  html += '<table style="width:100%;border-collapse:collapse;">';
+  html += '<thead><tr><th style="text-align:left;padding:8px;font-size:0.75rem;color:#5a6a80;border-bottom:1px solid #2a3040;">Asset</th><th style="text-align:left;padding:8px;font-size:0.75rem;color:#5a6a80;border-bottom:1px solid #2a3040;">Price</th><th style="text-align:left;padding:8px;font-size:0.75rem;color:#5a6a80;border-bottom:1px solid #2a3040;">24h</th><th style="padding:8px;border-bottom:1px solid #2a3040;"></th></tr></thead><tbody>';
+  for (var i = 0; i < COINS.length; i++) {
+    var c = COINS[i];
+    var chg = CHG[c];
+    html += '<tr>';
+    html += '<td style="padding:9px 8px;border-bottom:1px solid #2a3040;font-weight:700;">' + c + '<br><span style="font-size:0.7rem;color:#5a6a80;font-weight:400;">' + CNAME[c] + '</span></td>';
+    html += '<td style="padding:9px 8px;border-bottom:1px solid #2a3040;">' + fUSD(PX[c]) + '</td>';
+    html += '<td style="padding:9px 8px;border-bottom:1px solid #2a3040;color:' + (chg >= 0 ? '#0ecb81' : '#f6465d') + ';">' + (chg >= 0 ? '+' : '') + chg.toFixed(2) + '%</td>';
+    html += '<td style="padding:9px 8px;border-bottom:1px solid #2a3040;"><button class="btn" style="padding:6px 12px;font-size:0.78rem;" onclick="openTrade(\'' + c + '\')">Trade</button></td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('sec_market').innerHTML = html;
+}
+
+function drawChart(cid) {
+  var cv = document.getElementById('tradeChart');
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  if (!ctx) return;
+  cv.width = cv.offsetWidth || 300;
+  var data = HIST[cid];
+  if (!data || data.length < 2) return;
+  var W = cv.width, H = cv.height;
+  var mn = data[0], mx = data[0], i;
+  for (i = 0; i < data.length; i++) { if (data[i] < mn) mn = data[i]; if (data[i] > mx) mx = data[i]; }
+  var pad = (mx - mn) * 0.1;
+  if (pad === 0) pad = 1;
+  mn -= pad; mx += pad;
+  ctx.clearRect(0, 0, W, H);
+  ctx.beginPath();
+  for (i = 0; i < data.length; i++) {
+    var x = (i / (data.length - 1)) * W;
+    var y = H - ((data[i] - mn) / (mx - mn)) * H;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = data[data.length-1] >= data[0] ? '#0ecb81' : '#f6465d';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function openTrade(coin) {
+  var u = loadUser(session.email);
+  if (!u) return;
+  if (!u.holdings) u.holdings = {};
+  var hld = u.holdings[coin] || { amt: 0, cost: 0 };
+  var html = '<h2 style="margin-bottom:16px;">Trade ' + coin + '</h2>';
+  html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:12px;">';
+  html += '<div style="font-weight:800;font-size:1.1rem;">' + fUSD(PX[coin]) + '</div>';
+  html += '<div style="font-size:0.8rem;color:#8a9ab0;">Your ' + coin + ': ' + (hld.amt || 0).toFixed(6) + '</div>';
+  html += '<div style="font-size:0.8rem;color:#8a9ab0;">Trading balance: ' + fUSD(u.trade) + '</div>';
+  html += '</div>';
+  html += '<canvas id="tradeChart" height="100" style="width:100%;background:#1e2430;border-radius:8px;display:block;margin-bottom:10px;"></canvas>';
+  html += '<div style="display:flex;margin-bottom:12px;border-radius:8px;overflow:hidden;border:1px solid #2a3040;">';
+  html += '<button id="sideBuy" onclick="setSide(\'buy\')" style="flex:1;padding:10px;background:#0ecb81;color:#000;font-weight:700;border:none;cursor:pointer;">BUY</button>';
+  html += '<button id="sideSell" onclick="setSide(\'sell\')" style="flex:1;padding:10px;background:#1e2430;color:#8a9ab0;font-weight:700;border:none;cursor:pointer;">SELL</button>';
+  html += '</div>';
+  html += '<input type="number" id="tAmt" placeholder="Amount in USD" style="margin-bottom:8px;">';
+  html += '<div style="display:flex;gap:5px;margin-bottom:12px;">';
+  html += '<button class="btn btn2" style="flex:1;padding:6px;font-size:0.78rem;" onclick="setPct(\'' + coin + '\',25)">25%</button>';
+  html += '<button class="btn btn2" style="flex:1;padding:6px;font-size:0.78rem;" onclick="setPct(\'' + coin + '\',50)">50%</button>';
+  html += '<button class="btn btn2" style="flex:1;padding:6px;font-size:0.78rem;" onclick="setPct(\'' + coin + '\',75)">75%</button>';
+  html += '<button class="btn btn2" style="flex:1;padding:6px;font-size:0.78rem;" onclick="setPct(\'' + coin + '\',100)">Max</button>';
+  html += '</div>';
+  html += '<div class="err" id="trErr"></div>';
+  html += '<button id="trBtn" class="btn" style="width:100%;padding:12px;" onclick="execTrade(\'' + coin + '\')">Buy ' + coin + '</button>';
+  html += '<button class="btn btn2" style="width:100%;margin-top:8px;" onclick="buildMarket()">Back</button>';
+  document.getElementById('sec_market').innerHTML = html;
+  window._tradeSide = 'buy';
+  window._tradeCoin = coin;
+  drawChart(coin);
+}
+
+function setSide(s) {
+  window._tradeSide = s;
+  document.getElementById('sideBuy').style.background = s === 'buy' ? '#0ecb81' : '#1e2430';
+  document.getElementById('sideBuy').style.color = s === 'buy' ? '#000' : '#8a9ab0';
+  document.getElementById('sideSell').style.background = s === 'sell' ? '#f6465d' : '#1e2430';
+  document.getElementById('sideSell').style.color = s === 'sell' ? '#fff' : '#8a9ab0';
+  var btn = document.getElementById('trBtn');
+  if (btn) btn.textContent = (s === 'buy' ? 'Buy ' : 'Sell ') + (window._tradeCoin || '');
+}
+
+function setPct(coin, p) {
+  var u = loadUser(session.email); if (!u) return;
+  var el = document.getElementById('tAmt'); if (!el) return;
+  if (window._tradeSide === 'sell') {
+    var h = (u.holdings && u.holdings[coin]) ? u.holdings[coin] : { amt: 0 };
+    el.value = (h.amt * PX[coin] * p / 100).toFixed(2);
+  } else {
+    el.value = ((u.trade || 0) * p / 100).toFixed(2);
+  }
+}
+
+function execTrade(coin) {
+  var u = loadUser(session.email); if (!u) return;
+  if (!u.holdings) u.holdings = {};
+  var amt = parseFloat(document.getElementById('tAmt').value) || 0;
+  var err = document.getElementById('trErr'); err.textContent = '';
+  if (amt <= 0) { err.textContent = 'Enter an amount.'; return; }
+  var side = window._tradeSide || 'buy';
+  var px = PX[coin], cAmt = amt / px;
+  var fm = load('tp_fm_' + u.email) || '';
+  if (side === 'buy') {
+    if ((u.trade || 0) < amt) { err.textContent = 'Insufficient trading balance.'; return; }
+    u.trade -= amt;
+    if (!u.holdings[coin]) u.holdings[coin] = { amt: 0, cost: 0 };
+    u.holdings[coin].amt += cAmt;
+    u.holdings[coin].cost += amt;
+    u.txs.push({ type: 'buy', coin: coin, amt: cAmt, px: px, total: amt, date: new Date().toLocaleDateString() });
+    toast('Bought ' + cAmt.toFixed(6) + ' ' + coin);
+  } else {
+    var h = u.holdings[coin] || { amt: 0, cost: 0 };
+    if ((h.amt || 0) * px < amt - 0.01) { err.textContent = 'Insufficient ' + coin + '.'; return; }
+    var proc = amt;
+    if (fm === 'loss') proc = amt * 0.6;
+    else if (fm === 'profit') proc = amt * 1.4;
+    h.amt -= cAmt;
+    h.cost = Math.max(0, h.cost - amt);
+    if (h.amt < 0.000001) { h.amt = 0; h.cost = 0; }
+    u.holdings[coin] = h;
+    u.trade += proc;
+    u.txs.push({ type: 'sell', coin: coin, amt: cAmt, px: px, total: proc, date: new Date().toLocaleDateString() });
+    toast('Sold for ' + fUSD(proc));
+  }
+  saveUser(u); session = u; save('tp_sess', session);
+  updBal(); openTrade(coin);
+}
+
+
+/* ---- HISTORY ---- */
+function buildHistory() {
+  var u = loadUser(session.email); if (!u) return;
+  if (!u.txs) u.txs = [];
+  var html = '<h2 style="margin-bottom:16px;">Transaction History</h2>';
+  if (!u.txs.length) { html += '<p style="color:#5a6a80;">No transactions yet.</p>'; }
+  else {
+    for (var i = u.txs.length - 1; i >= 0; i--) {
+      var tx = u.txs[i];
+      var isBuy = tx.type === 'buy';
+      var isWD = tx.type === 'withdraw';
+      var isDep = tx.type === 'deposit';
+      var col = isBuy ? '#f6465d' : '#0ecb81';
+      if (isWD) col = '#f0b90b';
+      if (isDep) col = '#0ecb81';
+      var icon = isBuy ? '▲' : (isWD ? '⬆' : (isDep ? '⬇' : '▼'));
+      var bg = isBuy ? 'rgba(246,70,93,0.12)' : (isWD ? 'rgba(240,185,11,0.1)' : 'rgba(14,203,129,0.12)');
+      html += '<div class="tx-item">';
+      html += '<div class="tx-dot" style="background:' + bg + ';color:' + col + ';">' + icon + '</div>';
+      html += '<div style="flex:1;"><div style="font-weight:600;">' + (isBuy ? 'Bought' : isWD ? 'Withdrawal' : isDep ? 'Deposit' : 'Sold') + (tx.coin ? ' ' + tx.coin : '') + '</div><div style="font-size:0.72rem;color:#5a6a80;">' + (tx.date || '') + '</div></div>';
+      html += '<div style="font-weight:700;color:' + col + ';">' + (isBuy ? '-' : '+') + fUSD(tx.total) + '</div>';
+      html += '</div>';
+    }
+  }
+  document.getElementById('sec_history').innerHTML = html;
+}
+
+/* ---- PROFILE ---- */
+function buildProfile() {
+  var u = loadUser(session.email); if (!u) return;
+  var kycColor = u.kyc === 'approved' ? '#0ecb81' : u.kyc === 'pending' ? '#f0b90b' : u.kyc === 'rejected' ? '#f6465d' : '#5a6a80';
+  var html = '<h2 style="margin-bottom:16px;">My Profile</h2>';
+  html += '<div style="background:#141820;border-radius:10px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">';
+  html += '<div class="av" style="width:52px;height:52px;font-size:1.3rem;">' + u.name.charAt(0).toUpperCase() + '</div>';
+  html += '<div><div style="font-weight:700;font-size:1.1rem;">' + u.name + '</div>';
+  html += '<div style="color:#8a9ab0;font-size:0.85rem;">' + u.email + '</div>';
+  html += '<div style="font-size:0.78rem;margin-top:4px;"><span style="color:' + kycColor + ';font-weight:700;">KYC: ' + (u.kyc || 'UNVERIFIED').toUpperCase() + '</span></div>';
+  html += '</div></div>';
+
+  // Rejection alert
+  if (u.kyc === 'rejected') {
+    html += '<div style="background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.4);border-radius:8px;padding:12px;margin-bottom:12px;">';
+    html += '<div style="font-weight:700;color:#f6465d;margin-bottom:4px;">❌ KYC Rejected</div>';
+    html += '<div style="color:#8a9ab0;font-size:0.82rem;">' + (u.kycRejectReason || 'Your documents were rejected. Please re-submit.') + '</div>';
+    html += '</div>';
+  }
+
+  // Unread notifs
+  var unread = 0;
+  if (u.notifs) { for (var ni = 0; ni < u.notifs.length; ni++) { if (!u.notifs[ni].read) unread++; } }
+  if (unread > 0) {
+    html += '<div style="background:rgba(240,185,11,0.1);border:1px solid rgba(240,185,11,0.3);border-radius:8px;padding:10px 14px;margin-bottom:12px;color:#f0b90b;font-size:0.85rem;cursor:pointer;" onclick="toggleNotifPanel()">';
+    html += '🔔 You have ' + unread + ' new notification' + (unread > 1 ? 's' : '') + ' — tap to view';
+    html += '</div>';
+  }
+
+  html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:12px;">';
+  html += '<div style="font-size:0.7rem;color:#5a6a80;text-transform:uppercase;margin-bottom:10px;">Account Details</div>';
+  html += '<div class="info-row"><span class="info-lbl">Phone</span><span class="info-val">' + (u.phone || '—') + '</span></div>';
+  html += '<div class="info-row"><span class="info-lbl">Country</span><span class="info-val">' + (u.country || '—') + '</span></div>';
+  html += '<div class="info-row"><span class="info-lbl">Date of Birth</span><span class="info-val">' + (u.dob || '—') + '</span></div>';
+  html += '<div class="info-row"><span class="info-lbl">Member Since</span><span class="info-val">' + (u.joined || '—') + '</span></div>';
+  html += '</div>';
+
+  html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+  html += '<button class="btn btn2" style="width:100%;" onclick="showEditProfile()">Edit Profile</button>';
+  if (u.kyc === 'approved') {
+    html += '<div style="border:2px solid #f6465d;border-radius:10px;padding:4px;display:flex;justify-content:center;">';
+    html += '<button class="btn" style="padding:12px 28px;font-size:0.95rem;" onclick="toast(\'Your account is already verified!\',\'#0ecb81\')">Already verified!</button>';
+    html += '</div>';
+  } else {
+    html += '<button class="btn btn2" style="width:100%;" onclick="showKYC()">' + (u.kyc === 'pending' ? '⏳ KYC Under Review' : u.kyc === 'rejected' ? '🔄 Re-submit KYC' : 'Submit KYC') + '</button>';
+  }
+  html += '<button class="btn btn2" style="width:100%;" onclick="goSec(\'withdraw\')">Withdraw Funds</button>';
+  html += '<button class="btn btn2" style="width:100%;" onclick="showChangePW()">Change Password</button>';
+  html += '<button class="btn btn2" style="width:100%;border-color:#f6465d;color:#f6465d;" onclick="doLogout()">Logout</button>';
+  html += '</div>';
+  document.getElementById('sec_profile').innerHTML = html;
+}
+
+function showEditProfile() {
+  var u = loadUser(session.email); if (!u) return;
+  var html = '<div style="cursor:pointer;color:#8a9ab0;font-size:0.85rem;margin-bottom:14px;" onclick="buildProfile()">← Back</div>';
+  html += '<h2 style="margin-bottom:16px;">Edit Profile</h2>';
+  html += '<label style="font-size:0.78rem;color:#5a6a80;">Full Name</label>';
+  html += '<input type="text" id="epName" value="' + (u.name || '') + '">';
+  html += '<label style="font-size:0.78rem;color:#5a6a80;">Phone</label>';
+  html += '<input type="text" id="epPhone" value="' + (u.phone || '') + '">';
+  html += '<label style="font-size:0.78rem;color:#5a6a80;">Country</label>';
+  html += '<input type="text" id="epCountry" value="' + (u.country || '') + '">';
+  html += '<label style="font-size:0.78rem;color:#5a6a80;">Date of Birth</label>';
+  html += '<input type="text" id="epDob" value="' + (u.dob || '') + '" placeholder="e.g. 01/01/1990">';
+  html += '<div class="err" id="epErr"></div>';
+  html += '<button class="btn" style="width:100%;" onclick="saveEditProfile()">Save Changes</button>';
+  html += '<button class="btn btn2" style="width:100%;margin-top:8px;" onclick="buildProfile()">Cancel</button>';
+  document.getElementById('sec_profile').innerHTML = html;
+}
+
+function saveEditProfile() {
+  var u = loadUser(session.email); if (!u) return;
+  u.name = document.getElementById('epName').value.trim() || u.name;
+  u.phone = document.getElementById('epPhone').value.trim();
+  u.country = document.getElementById('epCountry').value.trim();
+  u.dob = document.getElementById('epDob').value.trim();
+  saveUser(u); session = u; save('tp_sess', session);
+  var av = document.getElementById('appAv');
+  if (av) av.textContent = u.name.charAt(0).toUpperCase();
+  toast('Profile updated!');
+  buildProfile();
+}
+
+function showChangePW() {
+  var html = '<div style="cursor:pointer;color:#8a9ab0;font-size:0.85rem;margin-bottom:14px;" onclick="buildProfile()">← Back</div>';
+  html += '<h2 style="margin-bottom:16px;">Change Password</h2>';
+  html += '<input type="password" id="cpCur" placeholder="Current password">';
+  html += '<input type="password" id="cpNew" placeholder="New password (min 6)">';
+  html += '<input type="password" id="cpConf" placeholder="Confirm new password">';
+  html += '<div class="err" id="cpErr"></div>';
+  html += '<button class="btn" style="width:100%;" onclick="saveChangePW()">Update Password</button>';
+  html += '<button class="btn btn2" style="width:100%;margin-top:8px;" onclick="buildProfile()">Cancel</button>';
+  document.getElementById('sec_profile').innerHTML = html;
+}
+
+function saveChangePW() {
+  var u = loadUser(session.email); if (!u) return;
+  var cur = document.getElementById('cpCur').value.trim();
+  var nw = document.getElementById('cpNew').value.trim();
+  var conf = document.getElementById('cpConf').value.trim();
+  var err = document.getElementById('cpErr'); err.textContent = '';
+  if (cur !== u.pass) { err.textContent = 'Current password incorrect.'; return; }
+  if (nw.length < 6) { err.textContent = 'New password min 6 characters.'; return; }
+  if (nw !== conf) { err.textContent = 'Passwords do not match.'; return; }
+  u.pass = nw; saveUser(u); session = u; save('tp_sess', session);
+  toast('Password updated!'); buildProfile();
+}
+
+function showKYC() {
+  var u = loadUser(session.email); if (!u) return;
+  var sec = document.getElementById('sec_profile');
+  var html = '<div style="cursor:pointer;color:#8a9ab0;font-size:0.85rem;margin-bottom:14px;" onclick="buildProfile()">← Back</div>';
+  html += '<h2 style="margin-bottom:6px;">Identity Verification</h2>';
+  html += '<p style="color:#8a9ab0;font-size:0.82rem;margin-bottom:14px;">Your account must be verified before withdrawing funds.</p>';
+
+  if (u.kyc === 'approved') {
+    html += '<div style="background:rgba(14,203,129,0.1);border:1px solid #0ecb8140;border-radius:10px;padding:16px;text-align:center;margin-bottom:14px;">';
+    html += '<div style="font-size:1.5rem;margin-bottom:6px;">✅</div>';
+    html += '<div style="font-weight:800;color:#0ecb81;font-size:1rem;">KYC APPROVED</div>';
+    html += '<div style="color:#8a9ab0;font-size:0.8rem;margin-top:4px;">Your identity has been verified.</div>';
+    html += '</div>';
+    html += '<button class="btn btn2" style="width:100%;" onclick="buildProfile()">Back to Profile</button>';
+    sec.innerHTML = html; return;
+  }
+  if (u.kyc === 'pending') {
+    html += '<div style="background:rgba(240,185,11,0.1);border:1px solid #f0b90b40;border-radius:10px;padding:16px;text-align:center;margin-bottom:14px;">';
+    html += '<div style="font-size:1.5rem;margin-bottom:6px;">⏳</div>';
+    html += '<div style="font-weight:800;color:#f0b90b;font-size:1rem;">UNDER REVIEW</div>';
+    html += '<div style="color:#8a9ab0;font-size:0.8rem;margin-top:4px;">Your documents have been submitted. Please wait for admin approval.</div>';
+    html += '</div>';
+    html += '<button class="btn btn2" style="width:100%;" onclick="buildProfile()">Back to Profile</button>';
+    sec.innerHTML = html; return;
+  }
+  if (u.kyc === 'rejected') {
+    html += '<div style="background:rgba(246,70,93,0.1);border:1px solid #f6465d40;border-radius:10px;padding:14px;margin-bottom:14px;">';
+    html += '<div style="font-weight:700;color:#f6465d;">❌ Documents Rejected</div>';
+    html += '<div style="color:#8a9ab0;font-size:0.8rem;margin-top:4px;">' + (u.kycRejectReason || 'Your documents were rejected. Please re-submit clear, valid documents.') + '</div>';
+    html += '</div>';
+  }
+
+  // Step 1: Government ID
+  html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid #2a3040;">';
+  html += '<div style="font-size:0.72rem;color:#f0b90b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">STEP 1 — Government-Issued ID</div>';
+  html += '<p style="color:#8a9ab0;font-size:0.8rem;margin-bottom:10px;">Accepted: National ID, Passport, Driver\'s License</p>';
+  html += '<div style="background:#1e2430;border:2px dashed #3a4560;border-radius:8px;padding:16px;text-align:center;margin-bottom:8px;">';
+  html += '<div style="color:#5a6a80;font-size:0.8rem;margin-bottom:8px;">📷 Upload front of ID</div>';
+  html += '<input type="file" id="kycDoc1" accept="image/*,.pdf" style="margin-bottom:0;font-size:0.8rem;">';
+  html += '</div></div>';
+
+  // Step 2: Birth Certificate
+  html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid #2a3040;">';
+  html += '<div style="font-size:0.72rem;color:#f0b90b;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">STEP 2 — Birth Certificate</div>';
+  html += '<p style="color:#8a9ab0;font-size:0.8rem;margin-bottom:10px;">Upload a clear photo or scan of your birth certificate.</p>';
+  html += '<div style="background:#1e2430;border:2px dashed #3a4560;border-radius:8px;padding:16px;text-align:center;margin-bottom:8px;">';
+  html += '<div style="color:#5a6a80;font-size:0.8rem;margin-bottom:8px;">📄 Upload birth certificate</div>';
+  html += '<input type="file" id="kycDoc2" accept="image/*,.pdf" style="margin-bottom:0;font-size:0.8rem;">';
+  html += '</div></div>';
+
+  html += '<div style="background:rgba(240,185,11,0.08);border-radius:8px;padding:10px;margin-bottom:14px;font-size:0.78rem;color:#8a9ab0;">';
+  html += '⚠️ Documents must be clear and legible. Blurry or cropped images will be rejected. Your account will remain unverified until admin reviews your documents.';
+  html += '</div>';
+  html += '<div class="err" id="kycErr"></div>';
+  html += '<button class="btn" style="width:100%;padding:13px;" onclick="submitKYC()">Submit Documents for Review</button>';
+  html += '<button class="btn btn2" style="width:100%;margin-top:8px;" onclick="buildProfile()">Cancel</button>';
+  sec.innerHTML = html;
+}
+
+function submitKYC() {
+  var u = loadUser(session.email); if (!u) return;
+  var doc1 = document.getElementById('kycDoc1');
+  var doc2 = document.getElementById('kycDoc2');
+  var err = document.getElementById('kycErr');
+  if (err) err.textContent = '';
+  if (!doc1 || !doc1.files || !doc1.files.length) { if (err) err.textContent = 'Please upload your Government ID.'; return; }
+  if (!doc2 || !doc2.files || !doc2.files.length) { if (err) err.textContent = 'Please upload Proof of Address.'; return; }
+  u.kyc = 'pending';
+  u.kycSubmitted = new Date().toLocaleString();
+  saveUser(u); session = u; save('tp_sess', session);
+  toast('Documents submitted! Awaiting admin review.'); buildProfile();
+}
+
+/* ---- WITHDRAW ---- */
+function buildWithdraw() {
+  var sec = document.getElementById('sec_withdraw'); if (!sec) return;
+  var u = loadUser(session.email); if (!u) return;
+  var avail = (u.cash || 0) + (u.trade || 0);
+  var wds = loadWDs(), mine = [], i;
+  for (i = 0; i < wds.length; i++) { if (wds[i].email === u.email) mine.push(wds[i]); }
+
+  var html = '<h2 style="margin-bottom:16px;">Withdraw Funds</h2>';
+  html += '<div style="background:rgba(246,70,93,0.1);border:1px solid rgba(246,70,93,0.3);border-radius:8px;padding:10px 12px;margin-bottom:14px;color:#f6465d;font-size:0.85rem;">⚠️ 30% processing fee applies on all withdrawals</div>';
+  html += '<div style="color:#8a9ab0;margin-bottom:14px;font-size:0.85rem;">Available: <strong style="color:#fff;font-size:1rem;">' + fUSD(avail) + '</strong></div>';
+  html += '<input type="text" id="wWal" placeholder="BTC Wallet Address (bc1q...)">';
+
+  // Amount with live fee calculator
+  html += '<input type="number" id="wAmt" placeholder="Amount USD (min $100)" oninput="calcWDFee()">';
+  html += '<div id="wFeeBox" style="display:none;background:#1a1f2e;border-radius:8px;padding:12px;margin-bottom:12px;border:1px solid #2a3040;">';
+  html += '<div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:6px;"><span style="color:#8a9ab0;">Withdrawal Amount</span><span id="wFeeAmt" style="color:#fff;font-weight:700;"></span></div>';
+  html += '<div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:6px;"><span style="color:#f6465d;">30% Processing Fee</span><span id="wFeeCharge" style="color:#f6465d;font-weight:700;"></span></div>';
+  html += '<div style="border-top:1px solid #2a3040;padding-top:8px;display:flex;justify-content:space-between;font-size:0.9rem;"><span style="color:#8a9ab0;">You Receive</span><span id="wFeeNet" style="color:#0ecb81;font-weight:800;"></span></div>';
+  html += '</div>';
+
+  html += '<div class="err" id="wErr"></div>';
+  html += '<button class="btn" style="width:100%;padding:13px;font-size:1rem;" onclick="preWD()">Request Withdrawal</button>';
+
+  // Rejected alerts
+  var hasRejected = false;
+  for (i = 0; i < mine.length; i++) { if (mine[i].status === 'rejected') { hasRejected = true; break; } }
+
+  if (mine.length) {
+    html += '<h3 style="margin:20px 0 10px;">My Requests</h3>';
+    for (i = mine.length - 1; i >= 0; i--) {
+      var wd = mine[i];
+      var isRej = wd.status === 'rejected';
+      var isApproved = wd.status === 'approved';
+      var borderCol = isRej ? 'rgba(246,70,93,0.5)' : isApproved ? 'rgba(14,203,129,0.3)' : '#2a3040';
+      html += '<div style="background:#141820;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid ' + borderCol + ';">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+      html += '<div><div style="font-weight:700;font-size:1rem;">' + fUSD(wd.amount) + '</div><div style="font-size:0.72rem;color:#5a6a80;">' + (wd.date || '') + '</div></div>';
+      html += '<span class="wd-badge wd-' + (wd.status || 'pending') + '">' + (wd.status === 'fee_pending' ? 'PENDING' : (wd.status || 'pending')) + '</span>';
+      html += '</div>';
+      if (wd.status === 'fee_pending') {
+        html += '<div style="background:rgba(240,185,11,0.1);border-radius:8px;padding:10px;font-size:0.8rem;color:#f0b90b;">';
+        html += '⏳ Awaiting admin confirmation. Do not re-submit.';
+        html += '</div>';
+      }
+      if (isApproved) {
+        html += '<div style="background:rgba(14,203,129,0.08);border-radius:8px;padding:10px;font-size:0.8rem;color:#0ecb81;">';
+        html += '✅ Approved — being processed to your wallet.';
+        html += '</div>';
+      }
+      if (isRej) {
+        html += '<div style="background:rgba(246,70,93,0.12);border:1px solid rgba(246,70,93,0.4);border-radius:8px;padding:12px;margin-top:4px;">';
+        html += '<div style="font-weight:800;color:#f6465d;font-size:0.88rem;margin-bottom:6px;">❌ Withdrawal Rejected</div>';
+        html += '<div style="font-size:0.82rem;color:#ff8a9a;margin-bottom:4px;"><strong>Reason:</strong> ' + (wd.rejectReason || 'Rejected by admin. Please contact support.') + '</div>';
+        html += '<div style="font-size:0.75rem;color:#8a9ab0;margin-top:6px;">Your funds have been refunded to your main balance.</div>';
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+  }
+  sec.innerHTML = html;
+}
+
+function calcWDFee() {
+  var amt = parseFloat(document.getElementById('wAmt').value) || 0;
+  var box = document.getElementById('wFeeBox');
+  if (amt >= 100) {
+    var fee = amt * 0.3;
+    var net = amt * 0.7;
+    document.getElementById('wFeeAmt').textContent = fUSD(amt);
+    document.getElementById('wFeeCharge').textContent = '- ' + fUSD(fee);
+    document.getElementById('wFeeNet').textContent = fUSD(net);
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+function preWD() {
+  var u = loadUser(session.email); if (!u) return;
+  var wal = document.getElementById('wWal').value.trim();
+  var amt = parseFloat(document.getElementById('wAmt').value) || 0;
+  var err = document.getElementById('wErr'); err.textContent = '';
+  if (!wal || wal.length < 8) { err.textContent = 'Enter a valid BTC wallet address.'; return; }
+  if (amt < 100) { err.textContent = 'Minimum withdrawal is $100.'; return; }
+  if (amt > (u.cash || 0) + (u.trade || 0)) { err.textContent = 'Insufficient balance.'; return; }
+
+  // Show fee popup
+  var fee = (amt * 0.3).toFixed(2);
+  var net = (amt * 0.7).toFixed(2);
+  var sec = document.getElementById('sec_withdraw');
+  var html = '<div style="background:#141820;border-radius:14px;padding:20px;max-width:380px;margin:40px auto;border:1px solid #2a3040;">';
+  html += '<h3 style="margin-bottom:14px;text-align:center;">⚠️ Fee Payment Required</h3>';
+  html += '<p style="color:#8a9ab0;font-size:0.85rem;text-align:center;margin-bottom:16px;">Please contact your platform manager and make your <strong style="color:#f0b90b;">30% processing fee payment</strong> before your withdrawal can be processed.</p>';
+  html += '<div style="background:#1a1f2e;border-radius:10px;padding:14px;margin-bottom:16px;">';
+  html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;"><span style="color:#8a9ab0;">Withdrawal</span><span style="font-weight:700;">' + fUSD(amt) + '</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.85rem;"><span style="color:#f6465d;">30% Fee to Pay</span><span style="font-weight:800;color:#f6465d;">$' + fee + '</span></div>';
+  html += '<div style="border-top:1px solid #2a3040;padding-top:8px;display:flex;justify-content:space-between;font-size:0.9rem;"><span style="color:#8a9ab0;">You Receive</span><span style="font-weight:800;color:#0ecb81;">$' + net + '</span></div>';
+  html += '</div>';
+  html += '<div style="background:rgba(240,185,11,0.08);border-radius:8px;padding:10px;margin-bottom:16px;font-size:0.8rem;color:#f0b90b;text-align:center;">Contact your platform manager to complete the fee payment, then press the button below.</div>';
+  html += '<button class="btn" style="width:100%;padding:13px;margin-bottom:8px;" onclick="confirmWDFee(\'' + wal + '\',' + amt + ')">✅ I Have Paid the Fee</button>';
+  html += '<button class="btn btn2" style="width:100%;" onclick="buildWithdraw()">Cancel</button>';
+  html += '</div>';
+  sec.innerHTML = html;
+}
+
+function confirmWDFee(wal, amt) {
+  var u = loadUser(session.email); if (!u) return;
+  var wds = loadWDs();
+  var fee = amt * 0.3;
+  wds.push({
+    id: String(Date.now()), email: u.email, name: u.name,
+    wallet: wal, amount: amt, fee: fee,
+    status: 'fee_pending', feePaid: true,
+    date: new Date().toLocaleDateString()
+  });
+  saveWDs(wds);
+  // Deduct balance immediately — stays in pending until admin approves
+  if (amt <= (u.trade || 0)) { u.trade -= amt; } else { var rem = amt - (u.trade || 0); u.trade = 0; u.cash = Math.max(0, (u.cash || 0) - rem); }
+  if (!u.txs) u.txs = [];
+  u.txs.push({ type: 'withdraw_pending', total: amt, date: new Date().toLocaleDateString() });
+  saveUser(u); session = u; save('tp_sess', session);
+  addActLog(u.name + ' submitted withdrawal ' + fUSD(amt) + ' — fee paid confirmation');
+  toast('Withdrawal submitted! Awaiting admin approval.', '#0ecb81');
+  buildWithdraw(); updBal();
+}
+
+
+/* ============ ADMIN ============ */
+
+var _admTab = 0;
+
+function buildAdmin() {
+  var sec = document.getElementById('sec_admin');
+  if (!sec) return;
+  var all = loadAll(), studs = [], i;
+  for (i = 0; i < all.length; i++) { if (!all[i].isAdmin) studs.push(all[i]); }
+  var wds = loadWDs(), pendWD = 0, totalBal = 0;
+  for (i = 0; i < wds.length; i++) { if (wds[i].status === 'pending') pendWD++; }
+  for (i = 0; i < studs.length; i++) { totalBal += (studs[i].cash||0) + (studs[i].trade||0) + holdVal(studs[i]); }
+  var sigs = loadSignals();
+  var actLog = loadActLog();
+
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">';
+  html += '<h2 style="margin:0;">Admin Panel</h2>';
+  html += '<button class="btn btn2" style="padding:6px 12px;font-size:0.78rem;" onclick="openModal(\'modalAdminPW\')">Change PW</button>';
+  html += '</div>';
+
+  // Stats
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">';
+  html += '<div style="background:#141820;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:1.3rem;font-weight:800;color:#f0b90b;">' + studs.length + '</div><div style="font-size:0.7rem;color:#5a6a80;">Students</div></div>';
+  html += '<div style="background:#141820;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:0.85rem;font-weight:800;color:#f0b90b;">' + fUSD(totalBal) + '</div><div style="font-size:0.7rem;color:#5a6a80;">Total Bal</div></div>';
+  html += '<div style="background:#141820;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:1.3rem;font-weight:800;color:' + (pendWD > 0 ? '#f6465d' : '#f0b90b') + ';">' + pendWD + '</div><div style="font-size:0.7rem;color:#5a6a80;">Pending WDs</div></div>';
+  html += '</div>';
+
+  // Signal box
+  html += '<div class="sig-box">';
+  html += '<div class="eng-title">📡 POST LIVE TRADE SIGNAL</div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Action</label><select id="sigAction"><option>BUY</option><option>SELL</option></select></div>';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Coin</label><select id="sigCoin">';
+  for (i = 0; i < COINS.length; i++) { html += '<option>' + COINS[i] + '</option>'; }
+  html += '</select></div>';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Qty</label><input type="number" id="sigQty" value="0.01" style="margin-bottom:0;padding:8px;font-size:0.85rem;"></div>';
+  html += '</div>';
+  html += '<div style="display:flex;gap:8px;">';
+  html += '<input type="number" id="sigPrice" placeholder="Price (e.g. 67000)" style="flex:1;margin-bottom:0;">';
+  html += '<button class="btn" style="margin:0;padding:10px 16px;font-size:0.85rem;" onclick="postSignal()">Post Signal</button>';
+  html += '</div>';
+  if (!sigs.length) {
+    html += '<div style="color:#5a6a80;font-size:0.8rem;margin-top:8px;">No signals posted yet.</div>';
+  } else {
+    html += '<div style="margin-top:8px;">';
+    for (var si = sigs.length - 1; si >= Math.max(0, sigs.length - 3); si--) {
+      var sg = sigs[si];
+      html += '<div class="sig-item"><span style="color:' + (sg.action === 'BUY' ? '#0ecb81' : '#f6465d') + ';font-weight:800;">' + sg.action + '</span>&nbsp;<strong>' + sg.coin + '</strong> &times; ' + sg.qty + ' @ ' + fUSD(sg.price) + '<span style="color:#5a6a80;font-size:0.72rem;">' + (sg.date || '') + '</span></div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // Tabs
+  html += '<div class="tab-row">';
+  html += '<button id="tab_s" class="tab-btn ' + (_admTab === 0 ? 'on' : '') + '" onclick="swTab(0)">Students (' + studs.length + ')</button>';
+  html += '<button id="tab_w" class="tab-btn ' + (_admTab === 1 ? 'on' : '') + '" onclick="swTab(1)">Withdrawals' + (pendWD > 0 ? ' <span style=\'background:#f6465d;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;\'>' + pendWD + '</span>' : '') + '</button>';
+  html += '<button id="tab_l" class="tab-btn ' + (_admTab === 2 ? 'on' : '') + '" onclick="swTab(2)">Log</button>';
+  html += '</div>';
+
+  // Students
+  html += '<div id="admS" style="display:' + (_admTab === 0 ? 'block' : 'none') + '">';
+  if (!studs.length) { html += '<p style="color:#5a6a80;">No students registered yet.</p>'; }
+  for (i = 0; i < studs.length; i++) { html += buildStudCard(studs[i]); }
+  html += '</div>';
+
+  // Withdrawals
+  html += '<div id="admW" style="display:' + (_admTab === 1 ? 'block' : 'none') + '">';
+  html += buildWDCards(wds);
+  html += '</div>';
+
+  // Activity Log
+  html += '<div id="admL" style="display:' + (_admTab === 2 ? 'block' : 'none') + '">';
+  if (!actLog.length) { html += '<p style="color:#5a6a80;">No activity yet.</p>'; }
+  for (i = 0; i < actLog.length; i++) {
+    html += '<div class="act-log" style="margin-bottom:6px;"><span style="color:#fff;">' + actLog[i].msg + '</span> <span style="color:#0ecb8190;font-size:0.72rem;">' + actLog[i].date + '</span></div>';
+  }
+  html += '</div>';
+
+  sec.innerHTML = html;
+}
+
+function buildStudCard(u) {
+  var total = (u.cash||0) + (u.trade||0) + holdVal(u);
+  var fm = load('tp_fm_' + u.email) || '';
+  var em = u.email;
+  var hldCount = 0, k;
+  if (u.holdings) { for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].amt > 0) hldCount++; } }
+  var kycColor = u.kyc === 'approved' ? '#0ecb81' : u.kyc === 'pending' ? '#f0b90b' : '#5a6a80';
+  var html = '<div class="stud-card">';
+  // Header row
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;" onclick="openStudentProfile(\'' + em + '\')">';
+  html += '<div class="av av-sm">' + u.name.charAt(0).toUpperCase() + '</div>';
+  html += '<div style="flex:1;"><div style="font-weight:700;font-size:0.95rem;">' + u.name + '</div><div style="font-size:0.75rem;color:#8a9ab0;">' + em + '</div></div>';
+  html += '<div style="font-size:0.7rem;color:#3a8fd4;font-weight:700;">VIEW →</div>';
+  html += '</div>';
+  // Balances
+  html += '<div style="display:flex;gap:6px;margin-bottom:8px;">';
+  html += '<div style="flex:1;background:#141820;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#5a6a80;">Main</div><div style="font-weight:700;color:#f0b90b;font-size:0.9rem;">' + fUSD(u.cash) + '</div></div>';
+  html += '<div style="flex:1;background:#141820;border-radius:6px;padding:8px;"><div style="font-size:0.65rem;color:#5a6a80;">Trading</div><div style="font-weight:700;color:#0ecb81;font-size:0.9rem;">' + fUSD(u.trade) + '</div></div>';
+  html += '</div>';
+  // KYC + stats
+  html += '<div style="font-size:0.75rem;color:#8a9ab0;margin-bottom:8px;">';
+  html += '<span style="color:' + kycColor + ';">KYC: ' + (u.kyc || 'unverified') + '</span> &nbsp;|&nbsp; ';
+  html += hldCount + ' holding' + (hldCount !== 1 ? 's' : '') + ' &nbsp;|&nbsp; ';
+  html += (u.txs ? u.txs.length : 0) + ' tx';
+  html += '</div>';
+  // Action buttons
+  html += '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">';
+  html += '<button class="btn" style="padding:6px 12px;font-size:0.78rem;margin:0;" onclick="openTopup(\'' + em + '\',\'' + u.name + '\')">Top Up</button>';
+  html += '<button style="padding:6px 12px;font-size:0.78rem;margin:0;background:#0ecb81;color:#000;border:none;border-radius:7px;font-weight:700;cursor:pointer;" onclick="quickAddProfit(\'' + em + '\')">+ Profit</button>';
+  html += '<button style="padding:6px 12px;font-size:0.78rem;margin:0;background:#f6465d;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;" onclick="openRemove(\'' + em + '\',\'' + u.name + '\')">&minus; Remove</button>';
+  html += '<button style="padding:6px 12px;font-size:0.78rem;margin:0;background:#1e2430;color:#8a9ab0;border:1px solid #2a3040;border-radius:7px;font-weight:700;cursor:pointer;" onclick="admDel(\'' + em + '\')">🗑</button>';
+  html += '</div>';
+  // Force engine
+  html += '<div style="font-size:0.65rem;color:#5a6a80;margin-bottom:4px;letter-spacing:0.06em;">FORCE:</div>';
+  html += '<div class="force-row">';
+  html += '<button class="force-btn force-profit ' + (fm === 'profit' ? 'active' : '') + '" onclick="admFM(\'' + em + '\',\'profit\')">▲ PROFIT</button>';
+  html += '<button class="force-btn force-loss ' + (fm === 'loss' ? 'active' : '') + '" onclick="admFM(\'' + em + '\',\'loss\')">▼ LOSS</button>';
+  html += '<button class="force-btn force-auto ' + (!fm ? 'active' : '') + '" onclick="admFM(\'' + em + '\',\'\')">AUTO</button>';
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
+/* ---- STUDENT PROFILE (admin view) ---- */
+function openStudentProfile(email) {
+  var u = loadUser(email);
+  if (!u) return;
+  var sec = document.getElementById('sec_admin');
+  var fm = load('tp_fm_' + email) || '';
+  var total = (u.cash||0) + (u.trade||0) + holdVal(u);
+  var hldCount = 0, k;
+  if (u.holdings) { for (k in u.holdings) { if (u.holdings[k] && u.holdings[k].amt > 0) hldCount++; } }
+  var buyTx = 0, sellTx = 0, i;
+  if (u.txs) { for (i = 0; i < u.txs.length; i++) { if (u.txs[i].type === 'buy') buyTx++; else if (u.txs[i].type === 'sell') sellTx++; } }
+  var wds = loadWDs(), userWDs = [];
+  for (i = 0; i < wds.length; i++) { if (wds[i].email === email) userWDs.push(wds[i]); }
+  var kycColor = u.kyc === 'approved' ? '#0ecb81' : u.kyc === 'pending' ? '#f0b90b' : '#5a6a80';
+
+  var html = '<div class="sp-back" onclick="buildAdmin()"><span>←</span> Back &nbsp;&nbsp; <strong style="color:#fff;">Student Profile</strong></div>';
+
+  // Identity card
+  html += '<div style="background:#1a1f2e;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #2a3040;display:flex;align-items:center;gap:12px;">';
+  html += '<div class="av" style="width:50px;height:50px;">' + u.name.charAt(0).toUpperCase() + '</div>';
+  html += '<div><div style="font-weight:700;font-size:1rem;">' + u.name + '</div>';
+  html += '<div style="font-size:0.78rem;color:#8a9ab0;">' + u.email + '</div>';
+  html += '<div style="font-size:0.72rem;color:#5a6a80;margin-top:3px;">Joined: ' + (u.joined || '—') + '</div>';
+  html += '</div></div>';
+
+  // Action buttons
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">';
+  html += '<button class="btn" style="flex:1;padding:9px;font-size:0.82rem;margin:0;" onclick="openTopup(\'' + email + '\',\'' + u.name + '\')">Top Up</button>';
+  html += '<button style="flex:1;padding:9px;font-size:0.82rem;margin:0;background:#0ecb81;color:#000;border:none;border-radius:8px;font-weight:700;cursor:pointer;" onclick="quickAddProfit(\'' + email + '\')">Add Profit</button>';
+  html += '</div>';
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">';
+  html += '<button style="flex:1;padding:9px;font-size:0.82rem;margin:0;background:#f6465d;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;" onclick="openRemove(\'' + email + '\',\'' + u.name + '\')">&minus; Remove</button>';
+  html += '<button class="btn btn2" style="flex:1;padding:9px;font-size:0.82rem;margin:0;" onclick="openResetPW(\'' + email + '\',\'' + u.name + '\')">Reset PW</button>';
+  html += '</div>';
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">';
+  html += '<button class="btn btn2" style="flex:1;padding:9px;font-size:0.82rem;margin:0;" onclick="openNotify(\'' + email + '\',\'' + u.name + '\')">Send Notification</button>';
+  html += '<button style="flex:1;padding:9px;font-size:0.82rem;margin:0;background:#f6465d;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;" onclick="admDel(\'' + email + '\')">Delete Account</button>';
+  html += '</div>';
+
+  // Trading Engine Control
+  html += '<div class="eng-box">';
+  html += '<div class="eng-title">🤖 TRADING ENGINE CONTROL</div>';
+  html += '<div class="force-row" style="margin-bottom:10px;">';
+  html += '<button class="force-btn force-profit ' + (fm === 'profit' ? 'active' : '') + '" onclick="admFM(\'' + email + '\',\'profit\');openStudentProfile(\'' + email + '\')">▲ FORCE PROFIT</button>';
+  html += '<button class="force-btn force-loss ' + (fm === 'loss' ? 'active' : '') + '" onclick="admFM(\'' + email + '\',\'loss\');openStudentProfile(\'' + email + '\')">▼ FORCE LOSS</button>';
+  html += '<button class="force-btn force-auto ' + (!fm ? 'active' : '') + '" onclick="admFM(\'' + email + '\',\'\');openStudentProfile(\'' + email + '\')">AUTO</button>';
+  html += '</div>';
+  html += '<div style="font-size:0.78rem;color:#5a6a80;">Status: ○ ' + (!fm ? 'Auto (default losing bias)' : fm === 'profit' ? 'Force Profit Mode' : 'Force Loss Mode') + '</div>';
+  html += '</div>';
+
+  // Stats grid
+  html += '<div class="stat-grid" style="margin-bottom:12px;">';
+  html += '<div class="stat-box"><div class="stat-lbl">Main Account</div><div class="stat-val">' + fUSD(u.cash) + '</div><div class="stat-sub">Available</div></div>';
+  html += '<div class="stat-box"><div class="stat-lbl">Trading Account</div><div class="stat-val" style="color:#0ecb81;">' + fUSD(u.trade) + '</div><div class="stat-sub">In trading</div></div>';
+  html += '<div class="stat-box"><div class="stat-lbl">Holdings</div><div class="stat-val" style="color:#fff;">' + hldCount + '</div><div class="stat-sub">Active coins</div></div>';
+  html += '<div class="stat-box"><div class="stat-lbl">Transactions</div><div class="stat-val" style="color:#fff;">' + (u.txs ? u.txs.length : 0) + '</div><div class="stat-sub">' + buyTx + ' buy / ' + sellTx + ' sell</div></div>';
+  html += '</div>';
+
+  // Account Info + Holdings (side by side)
+  html += '<div class="stat-grid" style="margin-bottom:12px;">';
+  // Account Info
+  html += '<div class="stat-box" style="grid-column:span 1;">';
+  html += '<div class="stat-lbl">Account Info</div>';
+  html += '<div class="info-row"><span class="info-lbl" style="font-size:0.72rem;">Email</span><span class="info-val" style="font-size:0.72rem;">' + u.email + '</span></div>';
+  html += '<div class="info-row"><span class="info-lbl" style="font-size:0.72rem;">Phone</span><span class="info-val" style="font-size:0.72rem;">' + (u.phone || '—') + '</span></div>';
+  html += '<div class="info-row"><span class="info-lbl" style="font-size:0.72rem;">Country</span><span class="info-val" style="font-size:0.72rem;">' + (u.country || '—') + '</span></div>';
+  html += '<div class="info-row"><span class="info-lbl" style="font-size:0.72rem;">DOB</span><span class="info-val" style="font-size:0.72rem;">' + (u.dob || '—') + '</span></div>';
+  html += '</div>';
+  // Holdings
+  html += '<div class="stat-box" style="grid-column:span 1;">';
+  html += '<div class="stat-lbl">Holdings</div>';
+  var hasH = false;
+  if (u.holdings) {
+    for (k in u.holdings) {
+      var h = u.holdings[k];
+      if (!h || !h.amt) continue;
+      hasH = true;
+      html += '<div class="info-row"><span class="info-lbl" style="font-size:0.72rem;">' + k + '</span><span class="info-val" style="font-size:0.72rem;">' + fUSD(h.amt * (PX[k] || 0)) + '</span></div>';
+    }
+  }
+  if (!hasH) html += '<div style="color:#5a6a80;font-size:0.8rem;margin-top:6px;">No holdings.</div>';
+  html += '</div>';
+  html += '</div>';
+
+  // KYC Section
+  html += '<div class="eng-box">';
+  html += '<div class="eng-title">KYC STATUS &nbsp; <span style="color:' + kycColor + ';">' + (u.kyc || 'unverified').toUpperCase() + ' 📋</span></div>';
+  if (u.kyc === 'pending') {
+    html += '<div style="font-size:0.8rem;color:#8a9ab0;margin-bottom:8px;">Document submitted — awaiting review.</div>';
+    html += '<div style="display:flex;gap:6px;">';
+    html += '<button style="flex:1;padding:7px;background:#0ecb81;color:#000;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.8rem;" onclick="admKYC(\'' + email + '\',\'approved\');openStudentProfile(\'' + email + '\')">✓ Approve</button>';
+    html += '<button style="flex:1;padding:7px;background:#f6465d;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.8rem;" onclick="admKYC(\'' + email + '\',\'rejected\');openStudentProfile(\'' + email + '\')">✗ Reject</button>';
+    html += '</div>';
+  } else {
+    html += '<div style="font-size:0.8rem;color:#5a6a80;">No documents submitted.</div>';
+  }
+  html += '</div>';
+
+  // Withdrawals
+  html += '<div class="eng-box">';
+  html += '<div class="eng-title">WITHDRAWALS</div>';
+  if (!userWDs.length) { html += '<div style="color:#5a6a80;font-size:0.8rem;">No withdrawal requests.</div>'; }
+  for (i = userWDs.length - 1; i >= 0; i--) {
+    var wd = userWDs[i];
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e2430;">';
+    html += '<div><div style="font-weight:700;font-size:0.85rem;">' + fUSD(wd.amount) + '</div><div style="font-size:0.7rem;color:#5a6a80;">' + (wd.date || '') + '</div></div>';
+    html += '<span class="wd-badge wd-' + (wd.status || 'pending') + '">' + (wd.status || 'pending') + '</span>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // Transactions
+  html += '<div class="eng-box">';
+  html += '<div class="eng-title">TRANSACTIONS</div>';
+  if (!u.txs || !u.txs.length) { html += '<div style="color:#5a6a80;font-size:0.8rem;">No transactions.</div>'; }
+  else {
+    for (i = u.txs.length - 1; i >= Math.max(0, u.txs.length - 8); i--) {
+      var tx = u.txs[i];
+      var tc = tx.type === 'deposit' ? '#0ecb81' : tx.type === 'buy' ? '#f6465d' : '#0ecb81';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #1e2430;font-size:0.82rem;">';
+      html += '<div><span style="color:' + tc + ';font-weight:700;text-transform:uppercase;">' + tx.type + '</span>' + (tx.coin ? ' ' + tx.coin : '') + '</div>';
+      html += '<div style="color:' + tc + ';font-weight:700;">' + fUSD(tx.total) + '</div>';
+      html += '<div style="color:#5a6a80;font-size:0.7rem;">' + (tx.date || '') + '</div>';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+
+  // Edit Account
+  html += '<div class="eng-box">';
+  html += '<div class="eng-title">EDIT ACCOUNT</div>';
+  html += '<div class="inp2" style="margin-bottom:8px;">';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Full Name</label><input type="text" id="spName" value="' + (u.name || '') + '" style="margin-bottom:0;padding:8px;font-size:0.82rem;"></div>';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Phone</label><input type="text" id="spPhone" value="' + (u.phone || '') + '" style="margin-bottom:0;padding:8px;font-size:0.82rem;"></div>';
+  html += '</div>';
+  html += '<div class="inp2" style="margin-bottom:8px;">';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Country</label><input type="text" id="spCountry" value="' + (u.country || '') + '" style="margin-bottom:0;padding:8px;font-size:0.82rem;"></div>';
+  html += '<div><label style="font-size:0.7rem;color:#5a6a80;">Date of Birth</label><input type="text" id="spDob" value="' + (u.dob || '') + '" style="margin-bottom:0;padding:8px;font-size:0.82rem;"></div>';
+  html += '</div>';
+  html += '<label style="font-size:0.7rem;color:#5a6a80;">Add Note (internal)</label>';
+  html += '<textarea id="spNote" placeholder="Admin notes...">' + (u.adminNote || '') + '</textarea>';
+
+html += ‘<div style="display:flex;gap:8px;">’;
+html += ‘<button class="btn" style="flex:1;margin:0;" onclick="saveStudentEdit(\'' + email + '\')">Save Changes</button>’;
+html += ‘<button class="btn btn2" style="flex:1;margin:0;" onclick="openStudentProfile(\'' + email + '\')">Cancel</button>’;
+html += ‘</div>’;
+html += ‘</div>’;
+
+sec.innerHTML = html;
+}
+
+function saveStudentEdit(email) {
+var u = loadUser(email); if (!u) return;
+u.name = document.getElementById(‘spName’).value.trim() || u.name;
+u.phone = document.getElementById(‘spPhone’).value.trim();
+u.country = document.getElementById(‘spCountry’).value.trim();
+u.dob = document.getElementById(‘spDob’).value.trim();
+u.adminNote = document.getElementById(‘spNote’).value.trim();
+saveUser(u);
+toast(‘Student profile updated!’);
+openStudentProfile(email);
+}
+
+/* –– ADMIN ACTIONS –– */
+function swTab(t) {
+_admTab = t;
+var ids = [‘admS’,‘admW’,‘admL’];
+var tabIds = [‘tab_s’,‘tab_w’,‘tab_l’];
+for (var i = 0; i < ids.length; i++) {
+var el = document.getElementById(ids[i]);
+var tb = document.getElementById(tabIds[i]);
+if (el) el.style.display = (i === t ? ‘block’ : ‘none’);
+if (tb) { tb.className = ‘tab-btn’ + (i === t ? ’ on’ : ‘’); }
+}
+}
+
+function postSignal() {
+var action = document.getElementById(‘sigAction’).value;
+var coin = document.getElementById(‘sigCoin’).value;
+var qty = parseFloat(document.getElementById(‘sigQty’).value) || 0;
+var price = parseFloat(document.getElementById(‘sigPrice’).value) || 0;
+if (!price || !qty) { toast(‘Enter price and qty’, ‘#f6465d’); return; }
+var sigs = loadSignals();
+sigs.push({ action: action, coin: coin, qty: qty, price: price, date: new Date().toLocaleString() });
+saveSignals(sigs);
+addActLog(‘Signal posted: ’ + action + ’ ’ + coin + ’ x’ + qty + ’ @ ’ + fUSD(price));
+toast(‘Signal posted!’);
+buildAdmin();
+}
+
+function openTopup(email, name) {
+_modalEmail = email;
+var u = loadUser(email);
+var meta = document.getElementById(‘topupMeta’);
+if (meta && u) {
+meta.innerHTML = ’<strong style="color:#fff;">Fund Account: ’ + u.email + ‘</strong><br>Current: Main <span style="color:#f0b90b;">’ + fUSD(u.cash) + ‘</span>   Trading <span style="color:#0ecb81;">’ + fUSD(u.trade) + ‘</span>’;
+}
+document.getElementById(‘topupAmt’).value = ‘’;
+document.getElementById(‘topupErr’).textContent = ‘’;
+document.getElementById(‘topupDestMain’).checked = true;
+openModal(‘modalTopup’);
+}
+
+function setTopupAmt(n) { document.getElementById(‘topupAmt’).value = n; }
+
+function execTopup() {
+var u = loadUser(*modalEmail); if (!u) return;
+var amt = parseFloat(document.getElementById(‘topupAmt’).value) || 0;
+var destMain = document.getElementById(‘topupDestMain’);
+var dest = (destMain && destMain.checked) ? ‘cash’ : ‘trade’;
+var err = document.getElementById(‘topupErr’); err.textContent = ‘’;
+if (amt <= 0) { err.textContent = ‘Enter a valid amount.’; return; }
+if (!u.txs) u.txs = [];
+if (dest === ‘cash’) {
+u.cash = (u.cash || 0) + amt;
+} else {
+u.trade = (u.trade || 0) + amt;
+// If engine is live, inject into chart data silently
+var eng = load(’tp_eng*’ + u.email);
+if (eng && eng.live) {
+eng.balance = (eng.balance || u.trade);
+eng.injected = (eng.injected || 0) + amt;
+save(‘tp_eng_’ + u.email, eng);
+}
+}
+u.txs.push({ type: ‘deposit’, total: amt, dest: dest, date: new Date().toLocaleDateString() });
+saveUser(u);
+var destLabel = dest === ‘cash’ ? ‘Main Account’ : ‘Trading Account’;
+addActLog(’Funded ’ + fUSD(amt) + ’ to ’ + u.name + ’ \u2192 ’ + destLabel);
+toast(’Funded ’ + fUSD(amt) + ’ to ’ + destLabel);
+closeModal(‘modalTopup’);
+buildAdmin();
+}
+
+function openRemove(email, name) {
+_modalEmail = email;
+document.getElementById(‘removeName’).textContent = name;
+document.getElementById(‘removeAmt’).value = ‘’;
+document.getElementById(‘removeErr’).textContent = ‘’;
+openModal(‘modalRemove’);
+}
+
+function execRemove() {
+var u = loadUser(*modalEmail); if (!u) return;
+var amt = parseFloat(document.getElementById(‘removeAmt’).value) || 0;
+var src = document.getElementById(‘removeSrc’).value;
+var err = document.getElementById(‘removeErr’); err.textContent = ‘’;
+if (amt <= 0) { err.textContent = ‘Enter a valid amount.’; return; }
+if (src === ‘trade’) {
+if (amt > (u.trade || 0)) { err.textContent = ‘Insufficient trading balance.’; return; }
+u.trade -= amt;
+// Silently crash the engine chart
+var eng = load(’tp_eng*’ + u.email);
+if (eng && eng.live) {
+eng.balance = Math.max(0, (eng.balance || u.trade) - amt);
+eng.removed = (eng.removed || 0) + amt;
+save(‘tp_eng_’ + u.email, eng);
+}
+} else {
+if (amt > (u.cash || 0)) { err.textContent = ‘Insufficient main balance.’; return; }
+u.cash -= amt;
+}
+saveUser(u);
+addActLog(’Removed ’ + fUSD(amt) + ’ from ’ + u.name);
+toast(’Removed ’ + fUSD(amt), ‘#f6465d’);
+closeModal(‘modalRemove’);
+buildAdmin();
+}
+
+function quickAddProfit(email) {
+var amt = parseFloat(prompt(’Add profit amount to ’ + email + ‘:’) || ‘0’);
+if (!amt || amt <= 0) return;
+var u = loadUser(email); if (!u) return;
+u.trade = (u.trade || 0) + amt;
+if (!u.txs) u.txs = [];
+u.txs.push({ type: ‘profit’, total: amt, date: new Date().toLocaleDateString() });
+saveUser(u);
+addActLog(’Added profit ’ + fUSD(amt) + ’ to ’ + u.name);
+toast(’Added profit ’ + fUSD(amt));
+buildAdmin();
+}
+
+function openResetPW(email, name) {
+_modalEmail = email;
+document.getElementById(‘resetPWName’).textContent = name;
+document.getElementById(‘newPWVal’).value = ‘’;
+document.getElementById(‘resetPWErr’).textContent = ‘’;
+openModal(‘modalResetPW’);
+}
+
+function execResetPW() {
+var u = loadUser(_modalEmail); if (!u) return;
+var pw = document.getElementById(‘newPWVal’).value.trim();
+var err = document.getElementById(‘resetPWErr’); err.textContent = ‘’;
+if (!pw || pw.length < 4) { err.textContent = ‘Enter at least 4 characters.’; return; }
+u.pass = pw; saveUser(u);
+addActLog(’Password reset for ’ + u.name);
+toast(‘Password reset!’);
+closeModal(‘modalResetPW’);
+}
+
+function openNotify(email, name) {
+_modalEmail = email;
+document.getElementById(‘notifyName’).textContent = name;
+document.getElementById(‘notifyMsg’).value = ‘’;
+document.getElementById(‘notifyErr’).textContent = ‘’;
+openModal(‘modalNotify’);
+}
+
+function execNotify() {
+var u = loadUser(_modalEmail); if (!u) return;
+var msg = document.getElementById(‘notifyMsg’).value.trim();
+var err = document.getElementById(‘notifyErr’); err.textContent = ‘’;
+if (!msg) { err.textContent = ‘Enter a message.’; return; }
+if (!u.notifs) u.notifs = [];
+u.notifs.push({ msg: msg, date: new Date().toLocaleString(), read: false });
+saveUser(u);
+addActLog(’Notification sent to ’ + u.name + ‘: “’ + msg.substring(0, 40) + ‘”’);
+toast(‘Notification sent!’);
+closeModal(‘modalNotify’);
+}
+
+function admFM(email, mode) {
+save(‘tp_fm_’ + email, mode);
+addActLog(’Trading mode set to ’ + (mode || ‘auto’) + ’ for ’ + email);
+toast(’Mode: ’ + (mode || ‘auto’));
+}
+
+function admKYC(email, status) {
+var u = loadUser(email); if (!u) return;
+var reason = ‘’;
+if (status === ‘rejected’) {
+reason = prompt(‘Reason for rejection (student will see this):’) || ‘Documents unclear or invalid. Please re-submit.’;
+u.kycRejectReason = reason;
+} else {
+u.kycRejectReason = ‘’;
+}
+u.kyc = status; saveUser(u);
+if (!u.notifs) u.notifs = [];
+var msg = status === ‘approved’
+? ‘Your KYC has been approved. You can now withdraw funds.’
+: ’Your KYC was rejected. Reason: ’ + reason;
+u.notifs.push({ msg: msg, date: new Date().toLocaleString(), read: false });
+saveUser(u);
+addActLog(’KYC ’ + status + ’ for ’ + u.name);
+toast(’KYC ’ + status);
+}
+
+function admDel(email) {
+if (!confirm(‘Delete this student? This cannot be undone.’)) return;
+var all = loadAll(), nu = [], i;
+for (i = 0; i < all.length; i++) { if (all[i].email !== email) nu.push(all[i]); }
+save(‘tp_all’, nu);
+try { localStorage.removeItem(‘tp_u_’ + email); } catch(e) {}
+addActLog(’Student deleted: ’ + email);
+toast(‘Student deleted.’, ‘#f6465d’);
+buildAdmin();
+}
+
+function buildWDCards(wds) {
+if (!wds.length) return ‘<p style="color:#5a6a80;">No withdrawal requests yet.</p>’;
+var html = ‘’, wd, j;
+for (j = wds.length-1; j >= 0; j–) {
+wd = wds[j];
+var sc = wd.status===‘approved’ ? ‘#0ecb81’ : wd.status===‘rejected’ ? ‘#f6465d’ : ‘#f0b90b’;
+var statusLabel = wd.status === ‘fee_pending’ ? ‘FEE PAID — PENDING’ : (wd.status || ‘pending’);
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid ' + (wd.status==='rejected'?'rgba(246,70,93,0.3)':'#2a3040') + ';">’;
+html += ‘<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><strong>’ + (wd.name||’’) + ‘</strong><span style="color:' + sc + ';font-size:0.78rem;font-weight:700;">’ + statusLabel.toUpperCase() + ‘</span></div>’;
+html += ‘<div style="font-size:0.75rem;color:#8a9ab0;margin-bottom:4px;">’ + (wd.email||’’) + ‘</div>’;
+html += ‘<div style="font-weight:700;font-size:1rem;margin-bottom:2px;color:#f0b90b;">’ + fUSD(wd.amount) + ‘</div>’;
+html += ’<div style="font-size:0.75rem;color:#0ecb81;margin-bottom:2px;">After 30% fee: ’ + fUSD(wd.amount * 0.7) + ‘</div>’;
+if (wd.fee) { html += ’<div style="font-size:0.75rem;color:#f6465d;margin-bottom:4px;">Fee to collect: ’ + fUSD(wd.fee) + ‘</div>’; }
+if (wd.wallet) html += ‘<div style="font-size:0.72rem;color:#5a6a80;word-break:break-all;margin-bottom:4px;">’ + wd.wallet + ‘</div>’;
+html += ‘<div style="font-size:0.7rem;color:#5a6a80;margin-bottom:8px;">’ + (wd.date || ‘’) + ‘</div>’;
+if (wd.rejectReason) {
+html += ’<div style="background:rgba(246,70,93,0.08);border-radius:6px;padding:8px;font-size:0.78rem;color:#f6465d;margin-bottom:8px;"><strong>Reject reason:</strong> ’ + wd.rejectReason + ‘</div>’;
+}
+if (wd.status === ‘fee_pending’ || wd.status === ‘pending’) {
+html += ‘<div style="display:flex;gap:6px;flex-wrap:wrap;">’;
+html += ‘<button style="flex:1;padding:7px;background:#0ecb81;color:#000;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.8rem;" onclick="admWD(' + j + ',\'approved\')">✓ Approve & Pay Out</button>’;
+html += ‘<button style="flex:1;padding:7px;background:#f6465d;color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:0.8rem;" onclick="admWD(' + j + ',\'rejected\')">✗ Reject</button>’;
+html += ‘</div>’;
+}
+html += ‘</div>’;
+}
+return html;
+}
+
+function admWD(idx, status) {
+var wds = loadWDs();
+var wd = wds[idx];
+var reason = ‘’;
+if (status === ‘rejected’) {
+reason = prompt(‘Reason for rejection (student will see this):’) || ‘Withdrawal rejected by admin.’;
+wd.rejectReason = reason;
+}
+wd.status = status;
+saveWDs(wds);
+
+// On approval: balance was already deducted at submission — just notify
+if (status === ‘approved’) {
+var u = loadUser(wd.email);
+if (u) {
+if (!u.txs) u.txs = [];
+u.txs.push({ type: ‘withdraw’, total: wd.amount, date: new Date().toLocaleDateString() });
+if (!u.notifs) u.notifs = [];
+u.notifs.push({ msg: ‘Your withdrawal of ’ + fUSD(wd.amount) + ’ has been approved and is being processed to your wallet.’, date: new Date().toLocaleString(), read: false });
+saveUser(u);
+}
+} else if (status === ‘rejected’) {
+// Rejected — refund the balance back to user
+var ur = loadUser(wd.email);
+if (ur) {
+ur.cash = (ur.cash || 0) + wd.amount;
+if (!ur.notifs) ur.notifs = [];
+ur.notifs.push({ msg: ’Your withdrawal of ’ + fUSD(wd.amount) + ’ was rejected and refunded. Reason: ’ + reason, date: new Date().toLocaleString(), read: false });
+saveUser(ur);
+}
+}
+
+addActLog(‘Withdrawal ’ + status + ’ for ’ + wd.name + ’ (’ + fUSD(wd.amount) + ‘)’ + (reason ? ’ — ’ + reason : ‘’));
+toast(’Withdrawal ’ + status, status === ‘approved’ ? ‘#0ecb81’ : ‘#f6465d’);
+buildAdmin(); swTab(1);
+}
+
+function admWDfee(idx) {
+var wds = loadWDs(), wd = wds[idx];
+alert(’Request client pay 30% fee of ’ + fUSD(wd.amount * 0.3) + ’ before processing withdrawal of ’ + fUSD(wd.amount) + ‘.’);
+}
+
+function execAdminPW() {
+var cur = document.getElementById(‘curAdmPW’).value.trim();
+var nw = document.getElementById(‘newAdmPW’).value.trim();
+var err = document.getElementById(‘admPWErr’); err.textContent = ‘’;
+if (cur !== getAdminPass()) { err.textContent = ‘Current password wrong.’; return; }
+if (!nw || nw.length < 4) { err.textContent = ‘New password too short.’; return; }
+save(ADMIN_PASS_KEY, nw);
+toast(‘Admin password updated!’);
+closeModal(‘modalAdminPW’);
+document.getElementById(‘curAdmPW’).value = ‘’;
+document.getElementById(‘newAdmPW’).value = ‘’;
+}
+
+/* –– TICKER / LANDING –– */
+function buildTicker() {
+var el = document.getElementById(‘ticker’);
+if (!el) return;
+var out = ‘’;
+for (var i = 0; i < COINS.length; i++) {
+var co = COINS[i];
+var chg = CHG[co];
+out += ‘<span style="display:inline-flex;align-items:center;gap:8px;font-size:0.78rem;">’;
+out += ‘<span style="color:#8a9ab0;">’ + co + ‘</span>’;
+out += ‘<span style="font-weight:700;">’ + fUSD(PX[co]) + ‘</span>’;
+out += ‘<span style="color:' + (chg >= 0 ? '#0ecb81' : '#f6465d') + ';">’ + (chg >= 0 ? ‘+’ : ‘’) + chg.toFixed(2) + ‘%</span>’;
+out += ‘</span>’;
+}
+el.innerHTML = out + ‘    ’ + out;
+}
+
+function buildLandMkt() {
+var tb = document.getElementById(‘landMktBody’);
+if (!tb) return;
+var out = ‘’;
+for (var i = 0; i < COINS.length; i++) {
+var co = COINS[i];
+var chg = CHG[co];
+out += ‘<tr>’;
+out += ‘<td style="padding:9px 8px;border-bottom:1px solid #2a3040;font-weight:700;">’ + co + ‘<br><span style="font-size:0.7rem;color:#5a6a80;font-weight:400;">’ + CNAME[co] + ‘</span></td>’;
+out += ‘<td style="padding:9px 8px;border-bottom:1px solid #2a3040;">’ + fUSD(PX[co]) + ‘</td>’;
+out += ‘<td style="padding:9px 8px;border-bottom:1px solid #2a3040;color:' + (chg >= 0 ? '#0ecb81' : '#f6465d') + ';">’ + (chg >= 0 ? ‘+’ : ‘’) + chg.toFixed(2) + ‘%</td>’;
+out += ‘<td style="padding:9px 8px;border-bottom:1px solid #2a3040;"><button style="background:#f0b90b;color:#000;border:none;border-radius:6px;padding:5px 10px;font-size:0.78rem;font-weight:700;cursor:pointer;" onclick="show(\'ovReg\')">Trade</button></td>’;
+out += ‘</tr>’;
+}
+tb.innerHTML = out;
+}
+
+/* –– ENGINE GLOBALS –– */
+
+/* ======== AUTO-TRADING ENGINE ======== */
+var _engTimer = null;
+var _engCandles = [];
+var _engBalance = 0;
+var _engStartBal = 0;
+var _engLive = false;
+
+function loadEng() {
+return load(‘tp_eng_’ + (session ? session.email : ‘’)) || { live: false, balance: 0, startBal: 0, candles: [] };
+}
+function saveEng(eng) {
+save(‘tp_eng_’ + session.email, eng);
+}
+
+function buildTrading() {
+var u = loadUser(session.email); if (!u) return;
+var eng = loadEng();
+_engLive = eng.live || false;
+_engBalance = eng.balance || u.trade || 0;
+_engStartBal = eng.startBal || _engBalance;
+_engCandles = eng.candles || [];
+
+var pnl = _engBalance - _engStartBal;
+var pct = _engStartBal > 0 ? (pnl / _engStartBal * 100) : 0;
+var pnlCol = pnl >= 0 ? ‘#0ecb81’ : ‘#f6465d’;
+
+var html = ‘’;
+// Hero banner
+html += ‘<div style="background:linear-gradient(135deg,#0b1a14 0%,#0e2118 100%);border-radius:14px;padding:18px;margin-bottom:14px;position:relative;overflow:hidden;border:1px solid #1a3a28;">’;
+html += ‘<div style="font-size:0.68rem;color:#5a6a80;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">AUTO-TRADING ENGINE</div>’;
+html += ‘<div style="font-size:1.3rem;font-weight:800;margin-bottom:2px;">Live Market <span style="color:#0ecb81;">Profits</span></div>’;
+html += ‘<div style="font-size:0.78rem;color:#5a6a80;">Real-time candlestick chart</div>’;
+html += ‘<div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:#0ecb8120;border:1px solid #0ecb8140;border-radius:10px;padding:10px 14px;text-align:center;">’;
+html += ‘<div style="font-size:0.65rem;color:#0ecb81;text-transform:uppercase;">Balance</div>’;
+html += ‘<div style="font-size:1.1rem;font-weight:800;color:#0ecb81;">’ + fUSD(_engBalance) + ‘</div>’;
+html += ‘</div></div>’;
+
+// Title
+html += ‘<h2 style="margin-bottom:4px;">Trading Account</h2>’;
+html += ‘<p style="color:#8a9ab0;font-size:0.82rem;margin-bottom:14px;">Fund your account, start the engine, watch it grow</p>’;
+
+// Add Funds button (only when stopped)
+if (!_engLive) {
+html += ‘<button class="btn" style="margin-bottom:14px;" onclick="engAddFunds()">+ Add Funds</button>’;
+}
+
+// Stats row
+html += ‘<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">’;
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;border:1px solid #2a3040;">’;
+html += ‘<div style="font-size:0.65rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Trading Balance</div>’;
+html += ‘<div style="font-size:1rem;font-weight:800;color:#0ecb81;">’ + fUSD(_engBalance) + ‘</div>’;
+html += ‘</div>’;
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;border:1px solid #2a3040;">’;
+html += ‘<div style="font-size:0.65rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Profit / Loss</div>’;
+html += ‘<div style="font-size:0.95rem;font-weight:800;color:' + pnlCol + ';">’ + (pnl >= 0 ? ‘+’ : ‘’) + fUSD(pnl) + ‘</div>’;
+html += ‘<div style="font-size:0.7rem;color:' + pnlCol + ';">(’ + (pct >= 0 ? ‘+’ : ‘’) + pct.toFixed(2) + ‘%)</div>’;
+html += ‘</div>’;
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;border:1px solid #2a3040;">’;
+html += ‘<div style="font-size:0.65rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Status</div>’;
+if (_engLive) {
+html += ‘<div style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;background:#0ecb81;border-radius:50%;display:inline-block;animation:pulse 1s infinite;"></span><span style="font-weight:800;color:#0ecb81;">LIVE</span></div>’;
+} else {
+html += ‘<div style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;background:#5a6a80;border-radius:50%;display:inline-block;"></span><span style="font-weight:700;color:#5a6a80;">Stopped</span></div>’;
+}
+html += ‘</div></div>’;
+
+// Main account balance
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;border:1px solid #2a3040;margin-bottom:12px;">’;
+html += ‘<div style="font-size:0.65rem;color:#5a6a80;text-transform:uppercase;margin-bottom:4px;">Main Account</div>’;
+html += ‘<div style="font-size:1rem;font-weight:800;color:#f0b90b;">’ + fUSD(u.cash) + ‘</div>’;
+html += ‘</div>’;
+
+// Chart
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:14px;border:1px solid #2a3040;margin-bottom:14px;">’;
+html += ‘<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">’;
+html += ‘<span style="font-size:0.7rem;color:#5a6a80;text-transform:uppercase;letter-spacing:0.08em;">LIVE CHART</span>’;
+html += ‘<span style="font-size:0.82rem;font-weight:700;color:' + pnlCol + ';">’ + fUSD(_engBalance) + ‘</span>’;
+html += ‘</div>’;
+html += ‘<canvas id="engChart" height="190" style="width:100%;display:block;border-radius:6px;"></canvas>’;
+html += ‘</div>’;
+
+// Buttons
+if (_engLive) {
+html += ‘<button onclick="engStop()" style="width:100%;padding:13px;background:#f6465d;color:#fff;border:none;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;margin-bottom:8px;">■ Stop Trading</button>’;
+html += ‘<button onclick="engWithdrawProfit()" style="width:100%;padding:12px;background:#1e2430;color:#fff;border:1px solid #3a4560;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;">Withdraw to Main Balance</button>’;
+} else {
+if (_engBalance > 0) {
+html += ‘<button onclick="engStart()" style="width:100%;padding:13px;background:#0ecb81;color:#000;border:none;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;margin-bottom:8px;">▶ Start Auto-Trading</button>’;
+html += ‘<button onclick="engWithdrawProfit()" style="width:100%;padding:12px;background:#1e2430;color:#fff;border:1px solid #3a4560;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;">Withdraw to Main Balance</button>’;
+}
+}
+
+html += ‘<style>@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}</style>’;
+
+document.getElementById(‘sec_trading’).innerHTML = html;
+
+// Draw chart after render
+setTimeout(function() { engDrawChart(); }, 60);
+
+// Start engine tick if live
+if (_engLive) { engStartTick(); }
+}
+
+function engAddFunds() {
+var u = loadUser(session.email); if (!u) return;
+var sec = document.getElementById(‘sec_trading’);
+var avail = u.cash || 0;
+var html = ‘<div style="cursor:pointer;color:#8a9ab0;font-size:0.85rem;margin-bottom:16px;" onclick="buildTrading()">← Back</div>’;
+html += ‘<h2 style="margin-bottom:6px;">Add Funds to Trading</h2>’;
+html += ‘<p style="color:#8a9ab0;font-size:0.82rem;margin-bottom:16px;">Move funds from your Main Account into your Trading Account to start trading.</p>’;
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;margin-bottom:14px;border:1px solid #2a3040;">’;
+html += ‘<div style="font-size:0.7rem;color:#5a6a80;margin-bottom:4px;">Available in Main Account</div>’;
+html += ‘<div style="font-size:1.3rem;font-weight:800;color:#f0b90b;">’ + fUSD(avail) + ‘</div>’;
+html += ‘</div>’;
+html += ‘<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'addFundsAmt\').value=' + Math.floor(avail*0.25) + '">25%</button>’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'addFundsAmt\').value=' + Math.floor(avail*0.5) + '">50%</button>’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'addFundsAmt\').value=' + Math.floor(avail*0.75) + '">75%</button>’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'addFundsAmt\').value=' + Math.floor(avail) + '">Max</button>’;
+html += ‘</div>’;
+html += ‘<input type="number" id="addFundsAmt" placeholder="Amount to add ($)" style="margin-bottom:8px;">’;
+html += ‘<div class="err" id="addFundsErr"></div>’;
+html += ‘<button class="btn" style="width:100%;padding:13px;" onclick="confirmAddFunds()">Move to Trading Account</button>’;
+html += ‘<button class="btn btn2" style="width:100%;margin-top:8px;" onclick="buildTrading()">Cancel</button>’;
+sec.innerHTML = html;
+}
+
+function confirmAddFunds() {
+var u = loadUser(session.email); if (!u) return;
+var amt = parseFloat(document.getElementById(‘addFundsAmt’).value) || 0;
+var err = document.getElementById(‘addFundsErr’); err.textContent = ‘’;
+if (amt <= 0) { err.textContent = ‘Enter a valid amount.’; return; }
+if (amt > (u.cash || 0)) { err.textContent = ‘Insufficient Main Account balance.’; return; }
+u.cash -= amt;
+u.trade = (u.trade || 0) + amt;
+if (!u.txs) u.txs = [];
+u.txs.push({ type: ‘transfer’, total: amt, date: new Date().toLocaleDateString() });
+saveUser(u); session = u; save(‘tp_sess’, session);
+var eng = loadEng();
+eng.balance = (eng.balance || 0) + amt;
+if (!eng.startBal) eng.startBal = eng.balance;
+saveEng(eng);
+toast(fUSD(amt) + ’ moved to Trading Account’, ‘#0ecb81’);
+buildTrading();
+}
+
+function engStart() {
+var u = loadUser(session.email); if (!u || u.trade <= 0) { toast(‘No trading balance’, ‘#f6465d’); return; }
+var eng = loadEng();
+eng.live = true;
+eng.balance = u.trade;
+eng.startBal = eng.startBal || u.trade;
+if (!eng.candles || eng.candles.length < 8) {
+// Seed 16 realistic-looking candles leading up to current balance
+eng.candles = [];
+var seedBal = u.trade;
+var si2;
+for (si2 = 0; si2 < 16; si2++) {
+var drift = (Math.random() - 0.5) * 0.006;
+seedBal = seedBal * (1 + drift);
+eng.candles.push(seedBal);
+}
+eng.candles.push(u.trade); // end on actual balance
+}
+saveEng(eng);
+addActLog(u.name + ’ started auto-trading with ’ + fUSD(u.trade));
+toast(‘Engine started!’, ‘#0ecb81’);
+buildTrading();
+}
+
+function engStop() {
+var u = loadUser(session.email); if (!u) return;
+var eng = loadEng();
+eng.live = false;
+// Sync final balance to user trade
+u.trade = eng.balance;
+saveUser(u); session = u; save(‘tp_sess’, session);
+saveEng(eng);
+if (_engTimer) { clearInterval(_engTimer); _engTimer = null; }
+addActLog(u.name + ’ stopped trading. Balance: ’ + fUSD(eng.balance));
+toast(‘Trading stopped’, ‘#f6465d’);
+buildTrading(); updBal();
+}
+
+function engWithdrawProfit() {
+var u = loadUser(session.email); if (!u) return;
+var eng = loadEng();
+var tradeBal = eng.live ? eng.balance : (u.trade || 0);
+var sec = document.getElementById(‘sec_trading’);
+var pnl = tradeBal - (eng.startBal || tradeBal);
+var pnlCol = pnl >= 0 ? ‘#0ecb81’ : ‘#f6465d’;
+
+var html = ‘<div style="cursor:pointer;color:#8a9ab0;font-size:0.85rem;margin-bottom:16px;" onclick="buildTrading()">← Back</div>’;
+html += ‘<h2 style="margin-bottom:6px;">Withdraw to Main Account</h2>’;
+html += ‘<p style="color:#8a9ab0;font-size:0.82rem;margin-bottom:14px;">Move any amount from your Trading Account back to your Main Account.</p>’;
+html += ‘<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">’;
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;border:1px solid #2a3040;"><div style="font-size:0.65rem;color:#5a6a80;margin-bottom:4px;">Trading Balance</div><div style="font-weight:800;color:#0ecb81;font-size:1.1rem;">’ + fUSD(tradeBal) + ‘</div></div>’;
+html += ‘<div style="background:#1a1f2e;border-radius:10px;padding:12px;border:1px solid #2a3040;"><div style="font-size:0.65rem;color:#5a6a80;margin-bottom:4px;">P&L</div><div style="font-weight:800;color:' + pnlCol + ';font-size:1rem;">’ + (pnl >= 0 ? ‘+’ : ‘’) + fUSD(pnl) + ‘</div></div>’;
+html += ‘</div>’;
+html += ‘<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'ewAmt\').value=' + (tradeBal*0.25).toFixed(2) + '">25%</button>’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'ewAmt\').value=' + (tradeBal*0.5).toFixed(2) + '">50%</button>’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'ewAmt\').value=' + (tradeBal*0.75).toFixed(2) + '">75%</button>’;
+html += ‘<button class="btn btn2" style="padding:7px 14px;font-size:0.82rem;" onclick="document.getElementById(\'ewAmt\').value=' + tradeBal.toFixed(2) + '">All</button>’;
+html += ‘</div>’;
+html += ‘<input type="number" id="ewAmt" placeholder="Amount to move to Main ($)">’;
+html += ‘<div class="err" id="ewErr"></div>’;
+html += ‘<button class="btn" style="width:100%;padding:13px;" onclick="confirmEngWithdraw()">Move to Main Account</button>’;
+html += ‘<button class="btn btn2" style="width:100%;margin-top:8px;" onclick="buildTrading()">Cancel</button>’;
+sec.innerHTML = html;
+}
+
+function confirmEngWithdraw() {
+var u = loadUser(session.email); if (!u) return;
+var eng = loadEng();
+var tradeBal = eng.live ? eng.balance : (u.trade || 0);
+var amt = parseFloat(document.getElementById(‘ewAmt’).value) || 0;
+var err = document.getElementById(‘ewErr’); err.textContent = ‘’;
+if (amt <= 0) { err.textContent = ‘Enter a valid amount.’; return; }
+if (amt > tradeBal + 0.001) { err.textContent = ‘Insufficient trading balance.’; return; }
+
+// Move to main cash immediately
+u.cash = (u.cash || 0) + amt;
+u.trade = Math.max(0, (u.trade || 0) - amt);
+if (!u.txs) u.txs = [];
+u.txs.push({ type: ‘trade_to_main’, total: amt, date: new Date().toLocaleDateString() });
+saveUser(u); session = u; save(‘tp_sess’, session);
+
+// Update engine balance
+eng.balance = Math.max(0, (eng.balance || 0) - amt);
+eng.startBal = Math.max(0, (eng.startBal || 0) - amt);
+saveEng(eng);
+
+toast(fUSD(amt) + ’ moved to Main Account’, ‘#0ecb81’);
+buildTrading(); updBal();
+}
+
+function engStartTick() {
+if (_engTimer) { clearInterval(_engTimer); _engTimer = null; }
+_engTimer = setInterval(function() {
+var u = loadUser(session ? session.email : ‘’);
+if (!u) { clearInterval(_engTimer); return; }
+var eng = loadEng();
+if (!eng.live) { clearInterval(_engTimer); _engTimer = null; buildTrading(); return; }
+
+```
+var fm = load('tp_fm_' + u.email) || '';
+var bias = -0.002; // default: slight losing bias
+if (fm === 'profit') bias = 0.008;
+else if (fm === 'loss') bias = -0.012;
+
+// Apply injected/removed amounts silently
+var inj = eng.injected || 0;
+var rem = eng.removed || 0;
+eng.injected = 0;
+eng.removed = 0;
+
+var swing = (Math.random() - 0.5) * 0.018;
+var delta = bias + swing;
+eng.balance = Math.max(0.01, eng.balance * (1 + delta) + inj - rem);
+
+// Sync to user.trade
+u.trade = eng.balance;
+saveUser(u);
+
+if (!eng.candles) eng.candles = [];
+eng.candles.push(eng.balance);
+if (eng.candles.length > 40) eng.candles = eng.candles.slice(eng.candles.length - 40);
+saveEng(eng);
+
+// Refresh UI if still on trading tab
+var ts = document.getElementById('sec_trading');
+if (ts && ts.style.display !== 'none') {
+  _engBalance = eng.balance;
+  _engCandles = eng.candles;
+  engUpdateUI(eng);
+}
+updBal();
+```
+
+}, 2500);
+}
+
+function engUpdateUI(eng) {
+var pnl = eng.balance - (eng.startBal || eng.balance);
+var pct = eng.startBal > 0 ? (pnl / eng.startBal * 100) : 0;
+var pnlCol = pnl >= 0 ? ‘#0ecb81’ : ‘#f6465d’;
+
+// Update balance displays
+var els = document.querySelectorAll(’[data-eng-bal]’);
+for (var i = 0; i < els.length; i++) { els[i].textContent = fUSD(eng.balance); }
+
+// Redraw chart only
+engDrawChart();
+
+// Update stats inline without full rebuild
+var statCells = document.getElementById(‘sec_trading’);
+if (!statCells) return;
+// Update all colored balance spans - just redraw the whole trading section periodically
+// Use lightweight approach: redraw every 5 ticks
+engUpdateTick = (engUpdateTick || 0) + 1;
+if (engUpdateTick >= 5) { engUpdateTick = 0; var wasLive = _engLive; buildTrading(); if (wasLive) engStartTick(); }
+}
+var engUpdateTick = 0;
+
+function engDrawChart() {
+var cv = document.getElementById(‘engChart’);
+if (!cv) return;
+var ctx = cv.getContext(‘2d’);
+if (!ctx) return;
+cv.width = cv.offsetWidth || 320;
+var W = cv.width, H = cv.height || 200;
+var RP = 54;
+var VOL_H = 24;
+var CHART_H = H - VOL_H;
+var data = (_engCandles && _engCandles.length >= 4) ? _engCandles : [];
+if (!data.length) {
+var b0 = _engBalance || 100; data = [];
+var bx = b0 * 0.97; var si;
+for (si = 0; si < 24; si++) { bx = bx * (1 + (Math.random() - 0.46) * 0.012); data.push(bx); }
+data.push(b0);
+}
+var candles = [];
+var grp = Math.max(1, Math.ceil(data.length / 14));
+var i, j, k;
+for (i = 0; i < data.length; i += grp) {
+var sl = [];
+for (j = i; j < Math.min(i + grp, data.length); j++) sl.push(data[j]);
+var o = sl[0], c = sl[sl.length - 1];
+var hi = o, lo = o;
+for (k = 0; k < sl.length; k++) { if (sl[k] > hi) hi = sl[k]; if (sl[k] < lo) lo = sl[k]; }
+var bodySpan = Math.abs(c - o) || o * 0.0008;
+hi += bodySpan * (0.5 + Math.random() * 1.2);
+lo -= bodySpan * (0.5 + Math.random() * 1.2);
+candles.push({ o: o, h: hi, l: lo, c: c });
+}
+if (!candles.length) candles = [{ o: _engBalance, h: _engBalance * 1.003, l: _engBalance * 0.997, c: _engBalance }];
+var mn = candles[0].l, mx = candles[0].h;
+for (i = 0; i < candles.length; i++) { if (candles[i].l < mn) mn = candles[i].l; if (candles[i].h > mx) mx = candles[i].h; }
+var rng = mx - mn;
+var vp = rng * 0.18 + 0.0001;
+mn -= vp; mx += vp; rng = mx - mn;
+function toY(v) { return CHART_H - ((v - mn) / rng) * CHART_H; }
+var bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+bgGrad.addColorStop(0, ‘#060d18’); bgGrad.addColorStop(1, ‘#0a1220’);
+ctx.fillStyle = bgGrad; ctx.fillRect(0, 0, W, H);
+ctx.strokeStyle = ‘rgba(40,80,120,0.35)’; ctx.lineWidth = 0.5;
+var gSteps = 5;
+for (i = 0; i <= gSteps; i++) {
+var gv = mn + rng * i / gSteps; var gy = toY(gv);
+ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W - RP, gy); ctx.stroke();
+ctx.fillStyle = ‘#2a4060’; ctx.font = ‘8px monospace’; ctx.textAlign = ‘left’;
+ctx.fillText(fUSD(gv), W - RP + 3, gy + 3);
+}
+var chartW = W - RP - 4;
+var slotW = Math.max(8, Math.floor(chartW / candles.length));
+var cw = Math.max(4, slotW - 3);
+var pts = [];
+for (i = 0; i < candles.length; i++) pts.push({ x: 4 + i * slotW + slotW / 2, y: toY(candles[i].c) });
+var glowLayers = [{ w: 10, a: 0.08, col: ‘#00ff88’ }, { w: 5, a: 0.18, col: ‘#00ee77’ }, { w: 2.5, a: 0.55, col: ‘#00dd66’ }, { w: 1.2, a: 1.0, col: ‘#1fffaa’ }];
+var gi;
+for (gi = 0; gi < glowLayers.length; gi++) {
+var gc = glowLayers[gi];
+ctx.save(); ctx.globalAlpha = gc.a; ctx.strokeStyle = gc.col; ctx.lineWidth = gc.w; ctx.lineJoin = ‘round’; ctx.lineCap = ‘round’;
+ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+for (i = 1; i < pts.length - 1; i++) { var cpx = (pts[i].x + pts[Math.min(i+1,pts.length-1)].x)/2; var cpy = (pts[i].y + pts[Math.min(i+1,pts.length-1)].y)/2; ctx.quadraticCurveTo(pts[i].x, pts[i].y, cpx, cpy); }
+ctx.lineTo(pts[pts.length-1].x, pts[pts.length-1].y); ctx.stroke(); ctx.restore();
+}
+var fillGrad = ctx.createLinearGradient(0, toY(mx), 0, CHART_H);
+fillGrad.addColorStop(0, ‘rgba(0,220,120,0.18)’); fillGrad.addColorStop(0.6, ‘rgba(0,180,100,0.04)’); fillGrad.addColorStop(1, ‘rgba(0,0,0,0)’);
+ctx.save(); ctx.globalAlpha = 0.7; ctx.fillStyle = fillGrad;
+ctx.beginPath(); ctx.moveTo(pts[0].x, CHART_H); ctx.lineTo(pts[0].x, pts[0].y);
+for (i = 1; i < pts.length - 1; i++) { var cpx2 = (pts[i].x + pts[Math.min(i+1,pts.length-1)].x)/2; var cpy2 = (pts[i].y + pts[Math.min(i+1,pts.length-1)].y)/2; ctx.quadraticCurveTo(pts[i].x, pts[i].y, cpx2, cpy2); }
+ctx.lineTo(pts[pts.length-1].x, pts[pts.length-1].y); ctx.lineTo(pts[pts.length-1].x, CHART_H); ctx.closePath(); ctx.fill(); ctx.restore();
+for (i = 0; i < candles.length; i++) {
+var cd = candles[i]; var isG = cd.c >= cd.o;
+var candleCol = isG ? ‘#00e676’ : ‘#ff4560’;
+var cx = 4 + i * slotW + slotW / 2;
+var oy = toY(cd.o); var cy2 = toY(cd.c); var hy = toY(cd.h); var ly = toY(cd.l);
+var bodyTop = Math.min(oy, cy2); var bodyH = Math.max(2, Math.abs(cy2 - oy));
+ctx.save(); ctx.shadowColor = candleCol; ctx.shadowBlur = isG ? 10 : 5;
+ctx.strokeStyle = candleCol; ctx.lineWidth = 1.2; ctx.globalAlpha = 0.85;
+ctx.beginPath(); ctx.moveTo(cx, hy); ctx.lineTo(cx, ly); ctx.stroke();
+ctx.globalAlpha = 1;
+if (isG) {
+ctx.fillStyle = candleCol; ctx.fillRect(cx - cw/2, bodyTop, cw, bodyH);
+ctx.fillStyle = ‘rgba(255,255,255,0.2)’; ctx.fillRect(cx - cw/2, bodyTop, cw*0.35, bodyH);
+} else {
+ctx.fillStyle = ‘rgba(255,69,96,0.15)’; ctx.fillRect(cx - cw/2, bodyTop, cw, bodyH);
+ctx.strokeStyle = candleCol; ctx.lineWidth = 1.5; ctx.strokeRect(cx - cw/2, bodyTop, cw, bodyH);
+}
+ctx.restore();
+}
+var lastC = candles[candles.length-1].c; var lastY = toY(lastC);
+ctx.save(); ctx.strokeStyle = ‘#ff4560’; ctx.lineWidth = 1; ctx.setLineDash([4,4]); ctx.globalAlpha = 0.8;
+ctx.beginPath(); ctx.moveTo(0, lastY); ctx.lineTo(W - RP, lastY); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+var tagW = 50, tagH = 15;
+ctx.save(); ctx.shadowColor = ‘#ff4560’; ctx.shadowBlur = 6; ctx.fillStyle = ‘#ff4560’;
+if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(W-RP, lastY-tagH/2, tagW, tagH, 3); ctx.fill(); } else { ctx.fillRect(W-RP, lastY-tagH/2, tagW, tagH); }
+ctx.restore(); ctx.fillStyle = ‘#fff’; ctx.font = ‘bold 8px monospace’; ctx.textAlign = ‘center’;
+ctx.fillText(fUSD(lastC), W - RP + tagW/2, lastY + 3);
+ctx.fillStyle = ‘rgba(6,13,24,0.9)’; ctx.fillRect(0, CHART_H, W-RP, VOL_H);
+var maxVol = 0.0001;
+for (i = 0; i < candles.length; i++) { var vv = Math.abs(candles[i].c - candles[i].o); if (vv > maxVol) maxVol = vv; }
+for (i = 0; i < candles.length; i++) {
+var cd3 = candles[i]; var isG3 = cd3.c >= cd3.o;
+var volH = Math.max(2, (Math.abs(cd3.c - cd3.o)/maxVol)*(VOL_H-4));
+var cx3 = 4 + i * slotW + slotW/2;
+ctx.save(); ctx.shadowColor = isG3 ? ‘#00e676’ : ‘#ff4560’; ctx.shadowBlur = 4;
+ctx.fillStyle = isG3 ? ‘rgba(0,230,118,0.6)’ : ‘rgba(255,69,96,0.6)’;
+ctx.fillRect(cx3 - cw/2, H - volH - 1, cw, volH); ctx.restore();
+}
+}
+
+/* Periodic live refresh when on trading tab */
+setInterval(function() {
+if (!session || session.isAdmin) return;
+var ts = document.getElementById(‘sec_trading’);
+if (!ts || ts.style.display === ‘none’) return;
+var eng = loadEng();
+if (eng.live && !_engTimer) { _engLive = true; _engBalance = eng.balance; _engCandles = eng.candles || []; engStartTick(); }
+}, 3000);
+
+/* –– INIT –– */
+buildTicker();
+buildLandMkt();
+setInterval(function() { buildTicker(); buildLandMkt(); }, 3000);
+setInterval(function() { if (session && !session.isAdmin) { updBal(); updBell(); } }, 5000);
+if (session) { launchApp(session.isAdmin ? true : false); }
+
+</script>
+</body>
+</html>
